@@ -14,7 +14,10 @@ type Pages = {
   "/": {
     params: {};
   };
-  "/genre": {
+  "/genero": {
+    params: {};
+  };
+  "/detalle": {
     params: {};
   };
   "/users": {
@@ -28,15 +31,19 @@ type Pages = {
 type RouteFiles = {
   "root.jsx": {
     id: "root";
-    page: "/" | "/genre" | "/users" | "/contact";
+    page: "/" | "/genero" | "/detalle" | "/users" | "/contact";
   };
   "routes/_index.jsx": {
     id: "routes/_index";
     page: "/";
   };
-  "routes/_genre.jsx": {
-    id: "routes/_genre";
-    page: "/genre";
+  "routes/_genero.jsx": {
+    id: "routes/_genero";
+    page: "/genero";
+  };
+  "routes/_detalle.jsx": {
+    id: "routes/_detalle";
+    page: "/detalle";
   };
   "routes/users.jsx": {
     id: "routes/users";
@@ -51,7 +58,8 @@ type RouteFiles = {
 type RouteModules = {
   "root": typeof import("./app/root.jsx");
   "routes/_index": typeof import("./app/routes/_index.jsx");
-  "routes/_genre": typeof import("./app/routes/_genre.jsx");
+  "routes/_genero": typeof import("./app/routes/_genero.jsx");
+  "routes/_detalle": typeof import("./app/routes/_detalle.jsx");
   "routes/users": typeof import("./app/routes/users.jsx");
   "routes/contact": typeof import("./app/routes/contact.jsx");
 };

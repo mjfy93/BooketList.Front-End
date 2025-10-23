@@ -1,12 +1,18 @@
-import { Outlet } from 'react-router'
+import { Outlet, useLocation } from 'react-router'
 import HtmlShell from './components/HtmlShell.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
 
 export default function App() {
+
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
+
+
   return (
     <ThemeProvider>
       <HtmlShell>
-        <main className='container mt-4'>
+        <main className= {isHomePage ? '' : 'container mt-4'}>
           <Outlet />
         </main>
       </HtmlShell>

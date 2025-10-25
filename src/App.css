@@ -39,22 +39,16 @@ main {
 .mb-2 { margin-bottom: 1rem; }
 .mb-3 { margin-bottom: 1.5rem; }
 
-.book-cover,
-.book-image,
-img[src*="cover"],
-img[src*="portada"],
-.book-card img,
-.genre-section img {
+img[class*="book"],
+img[class*="card"],
+[class*="book"] img,
+[class*="card"] img {
     width: 150px !important;
     height: 200px !important;
     object-fit: cover !important;
-    border-radius: 5px;
 }
 
-div[class*="book"] img,
-div[class*="card"] img,
-section img {
-    width: 150px !important;
-    height: 200px !important;
-    object-fit: cover !important;
+img {
+    max-width: 150px !important;
+    max-height: 200px !important;
 }

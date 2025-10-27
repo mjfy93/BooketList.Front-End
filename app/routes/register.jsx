@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { useAuth } from '../../context/AuthContext';
-import './register.css';
+import { useAuth } from '../context/Authcontext';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -78,86 +78,124 @@ const Register = () => {
     };
 
     return (
-        <div className="register-container">
-            <div className="register-card">
-                <h2>Crear Cuenta</h2>
-                <p className="register-subtitle">Únete a nuestra biblioteca virtual</p>
-                
-                {error && <div className="alert alert-danger">{error}</div>}
-                
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="username">Nombre de Usuario *</label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            required
-                            minLength="3"
-                        />
+        <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
+            <div className="card shadow-lg border-0" style={{ maxWidth: '400px', width: '100%' }}>
+                <div className="card-body p-4">
+                    <h2 className="card-title text-center mb-2">Crear Cuenta</h2>
+                    <p className="text-center text-muted mb-4">Únete a nuestra biblioteca virtual</p>
+                    
+                    {error && (
+                        <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                            {error}
+                            <button 
+                                type="button" 
+                                className="btn-close" 
+                                onClick={() => setError('')}
+                            ></button>
+                        </div>
+                    )}
+                    
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-3">
+                            <label htmlFor="username" className="form-label">
+                                Nombre de Usuario *
+                            </label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="username"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                required
+                                minLength="3"
+                            />
+                        </div>
+
+                        <div className="mb-3">
+                            <label htmlFor="email" className="form-label">
+                                Correo Electrónico *
+                            </label>
+                            <input
+                                type="email"
+                                className="form-control"
+                                id="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="mb-3">
+                            <label htmlFor="last_name" className="form-label">
+                                Apellido
+                            </label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="last_name"
+                                name="last_name"
+                                value={formData.last_name}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="mb-3">
+                            <label htmlFor="password" className="form-label">
+                                Contraseña *
+                            </label>
+                            <input
+                                type="password"
+                                className="form-control"
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                                minLength="6"
+                            />
+                        </div>
+
+                        <div className="mb-4">
+                            <label htmlFor="confirmPassword" className="form-label">
+                                Confirmar Contraseña *
+                            </label>
+                            <input
+                                type="password"
+                                className="form-control"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        <button 
+                            type="submit" 
+                            className="btn btn-primary w-100 py-2"
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <>
+                                    <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                                    Registrando...
+                                </>
+                            ) : (
+                                'Registrarse'
+                            )}
+                        </button>
+                    </form>
+
+                    <div className="text-center mt-4">
+                        <p className="mb-0">
+                            ¿Ya tienes una cuenta?{' '}
+                            <Link to="/login" className="text-decoration-none">
+                                Inicia Sesión
+                            </Link>
+                        </p>
                     </div>
-
-                    <div className="form-group">
-                        <label htmlFor="email">Correo Electrónico *</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="last_name">Apellido</label>
-                        <input
-                            type="text"
-                            id="last_name"
-                            name="last_name"
-                            value={formData.last_name}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="password">Contraseña *</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                            minLength="6"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="confirmPassword">Confirmar Contraseña *</label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <button 
-                        type="submit" 
-                        className="btn-register"
-                        disabled={loading}
-                    >
-                        {loading ? 'Registrando...' : 'Registrarse'}
-                    </button>
-                </form>
-
-                <div className="login-link">
-                    <p>¿Ya tienes una cuenta? <Link to="/login">Inicia Sesión</Link></p>
                 </div>
             </div>
         </div>

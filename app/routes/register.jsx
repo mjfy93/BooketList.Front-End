@@ -41,7 +41,7 @@ const Register = () => {
         }
 
         try {
-            // Esta URL será reemplazada cuando conectes con el back-end
+            
             const response = await fetch('http://localhost:5000/api/auth/register', {
                 method: 'POST',
                 headers: {
@@ -96,7 +96,7 @@ const Register = () => {
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
                             <label htmlFor="username" className="form-label">
-                                Nombre de Usuario *
+                                Nombre *
                             </label>
                             <input
                                 type="text"
@@ -107,6 +107,20 @@ const Register = () => {
                                 onChange={handleChange}
                                 required
                                 minLength="3"
+                            />
+                        </div>
+
+                        <div className="mb-3">
+                            <label htmlFor="last_name" className="form-label">
+                                Apellido
+                            </label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="last_name"
+                                name="last_name"
+                                value={formData.last_name}
+                                onChange={handleChange}
                             />
                         </div>
 
@@ -122,20 +136,6 @@ const Register = () => {
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
-                            />
-                        </div>
-
-                        <div className="mb-3">
-                            <label htmlFor="last_name" className="form-label">
-                                Apellido
-                            </label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="last_name"
-                                name="last_name"
-                                value={formData.last_name}
-                                onChange={handleChange}
                             />
                         </div>
 

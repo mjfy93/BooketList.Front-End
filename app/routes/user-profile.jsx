@@ -1,21 +1,18 @@
 // routes/admin-user-detail.jsx
 import { useState } from 'react'
-import { Link, useParams, useNavigate } from 'react-router'
+import { Link, useParams } from 'react-router'
 
 export default function AdminUserDetail() {
   const { id } = useParams()
-  const navigate = useNavigate()
   
-  const [user, setUser] = useState({
+  const [user] = useState({
     id: parseInt(id),
     name: 'Juan Pérez',
     email: 'juan@email.com',
     role: 'user',
     status: 'active',
     joinDate: '2024-01-15',
-    lastLogin: '2024-10-24',
-    totalBooks: 8,
-    totalReviews: 12
+    lastLogin: '2024-10-24'
   })
 
   const [readingLists] = useState({
@@ -58,14 +55,16 @@ export default function AdminUserDetail() {
       comment: 'Increíblemente visionario y perturbador. Una lectura obligatoria para entender nuestro tiempo.',
       date: '2024-07-22',
       likes: 18
+    },
+    { 
+      id: 3, 
+      bookTitle: 'El principito', 
+      rating: 5, 
+      comment: 'Un libro que todo adulto debería releer. Lleno de sabiduría y sensibilidad.',
+      date: '2024-06-10',
+      likes: 32
     }
   ])
-
-  const toggleUserStatus = () => {
-    const newStatus = user.status === 'active' ? 'blocked' : 'active'
-    setUser({...user, status: newStatus})
-    alert(`Usuario ${newStatus === 'active' ? 'desbloqueado' : 'bloqueado'} correctamente`)
-  }
 
   return (
     <div className="container-fluid">
@@ -106,17 +105,17 @@ export default function AdminUserDetail() {
             {/* Información Básica del Usuario */}
             <div className="card mb-4">
               <div className="card-body">
-                <div className="row align-items-center">
+                <div className="row">
                   <div className="col-md-8">
                     <div className="d-flex align-items-center">
                       <div className="avatar bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" 
-                           style={{width: '80px', height: '80px', fontSize: '2rem'}}>
+                           style={{width: '60px', height: '60px', fontSize: '1.5rem'}}>
                         {user.name.charAt(0)}
                       </div>
                       <div>
-                        <h3 className="mb-1">{user.name}</h3>
-                        <p className="text-muted mb-2">{user.email}</p>
-                        <div className="d-flex gap-2 mb-2">
+                        <h4 className="mb-1">{user.name}</h4>
+                        <p className="text-muted mb-1">{user.email}</p>
+                        <div className="d-flex gap-2">
                           <span className={`badge ${user.role === 'author' ? 'bg-info' : 'bg-secondary'}`}>
                             {user.role === 'author' ? 'Autor' : 'Usuario'}
                           </span>
@@ -124,33 +123,14 @@ export default function AdminUserDetail() {
                             {user.status === 'active' ? 'Activo' : 'Bloqueado'}
                           </span>
                         </div>
-                        <div className="text-muted">
-                          <small>Miembro desde: {user.joinDate}</small>
-                          <br />
-                          <small>Último acceso: {user.lastLogin}</small>
-                        </div>
                       </div>
                     </div>
                   </div>
                   <div className="col-md-4 text-end">
-                    <div className="mb-3">
-                      <button 
-                        className={`btn ${user.status === 'active' ? 'btn-warning' : 'btn-success'} btn-lg`}
-                        onClick={toggleUserStatus}
-                      >
-                        <i className={`fas ${user.status === 'active' ? 'fa-lock' : 'fa-unlock'} me-2`}></i>
-                        {user.status === 'active' ? 'Bloquear Usuario' : 'Desbloquear Usuario'}
-                      </button>
-                    </div>
-                    <div className="row text-center">
-                      <div className="col-6">
-                        <h4 className="text-primary mb-0">{user.totalBooks}</h4>
-                        <small className="text-muted">Libros</small>
-                      </div>
-                      <div className="col-6">
-                        <h4 className="text-success mb-0">{user.totalReviews}</h4>
-                        <small className="text-muted">Reseñas</small>
-                      </div>
+                    <div className="text-muted">
+                      <small>Miembro desde: {user.joinDate}</small>
+                      <br />
+                      <small>Último acceso: {user.lastLogin}</small>
                     </div>
                   </div>
                 </div>

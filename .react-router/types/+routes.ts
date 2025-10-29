@@ -23,6 +23,15 @@ type Pages = {
   "/contact": {
     params: {};
   };
+  "/profile": {
+    params: {};
+  };
+  "/login": {
+    params: {};
+  };
+  "/register": {
+    params: {};
+  };
   "/admin/login": {
     params: {};
   };
@@ -36,6 +45,12 @@ type Pages = {
     params: {};
   };
   "/admin/authors": {
+    params: {};
+  };
+  "/admin/books/new": {
+    params: {};
+  };
+  "/admin/authors/new": {
     params: {};
   };
   "/admin/books/edit/:id": {
@@ -63,7 +78,7 @@ type Pages = {
 type RouteFiles = {
   "root.jsx": {
     id: "root";
-    page: "/" | "/genre" | "/users" | "/contact" | "/admin/login" | "/admin" | "/admin/users" | "/admin/books" | "/admin/authors" | "/admin/books/edit/:id" | "/admin/authors/:id" | "/admin/users/:id" | "/admin/authors/:id/books";
+    page: "/" | "/genre" | "/users" | "/contact" | "/profile" | "/login" | "/register" | "/admin/login" | "/admin" | "/admin/users" | "/admin/books" | "/admin/authors" | "/admin/books/new" | "/admin/authors/new" | "/admin/books/edit/:id" | "/admin/authors/:id" | "/admin/users/:id" | "/admin/authors/:id/books";
   };
   "routes/_index.jsx": {
     id: "routes/_index";
@@ -80,6 +95,18 @@ type RouteFiles = {
   "routes/contact.jsx": {
     id: "routes/contact";
     page: "/contact";
+  };
+  "routes/user-profile.jsx": {
+    id: "routes/user-profile";
+    page: "/profile";
+  };
+  "routes/login.jsx": {
+    id: "routes/login";
+    page: "/login";
+  };
+  "routes/register.jsx": {
+    id: "routes/register";
+    page: "/register";
   };
   "routes/admin-login.jsx": {
     id: "routes/admin-login";
@@ -100,6 +127,14 @@ type RouteFiles = {
   "routes/admin-authors.jsx": {
     id: "routes/admin-authors";
     page: "/admin/authors";
+  };
+  "routes/admin-new-book.jsx": {
+    id: "routes/admin-new-book";
+    page: "/admin/books/new";
+  };
+  "routes/admin-new-author.jsx": {
+    id: "routes/admin-new-author";
+    page: "/admin/authors/new";
   };
   "routes/admin-edit-book.jsx": {
     id: "routes/admin-edit-book";
@@ -125,11 +160,16 @@ type RouteModules = {
   "routes/_genre": typeof import("./app/routes/_genre.jsx");
   "routes/users": typeof import("./app/routes/users.jsx");
   "routes/contact": typeof import("./app/routes/contact.jsx");
+  "routes/user-profile": typeof import("./app/routes/user-profile.jsx");
+  "routes/login": typeof import("./app/routes/login.jsx");
+  "routes/register": typeof import("./app/routes/register.jsx");
   "routes/admin-login": typeof import("./app/routes/admin-login.jsx");
   "routes/admin-dashboard": typeof import("./app/routes/admin-dashboard.jsx");
   "routes/admin-users": typeof import("./app/routes/admin-users.jsx");
   "routes/admin-books": typeof import("./app/routes/admin-books.jsx");
   "routes/admin-authors": typeof import("./app/routes/admin-authors.jsx");
+  "routes/admin-new-book": typeof import("./app/routes/admin-new-book.jsx");
+  "routes/admin-new-author": typeof import("./app/routes/admin-new-author.jsx");
   "routes/admin-edit-book": typeof import("./app/routes/admin-edit-book.jsx");
   "routes/admin-author-detail": typeof import("./app/routes/admin-author-detail.jsx");
   "routes/admin-user-detail": typeof import("./app/routes/admin-user-detail.jsx");

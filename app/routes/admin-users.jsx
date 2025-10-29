@@ -11,7 +11,8 @@ export default function AdminUsers() {
       status: 'active',
       role: 'user',
       joinDate: '2024-01-15',
-      booksAdded: 12
+      booksAdded: 12,
+      totalReviews: 8
     },
     {
       id: 2,
@@ -20,7 +21,8 @@ export default function AdminUsers() {
       status: 'blocked',
       role: 'author',
       joinDate: '2024-02-20',
-      booksAdded: 45
+      booksAdded: 45,
+      totalReviews: 23
     },
     {
       id: 3,
@@ -29,7 +31,8 @@ export default function AdminUsers() {
       status: 'active',
       role: 'user',
       joinDate: '2024-03-10',
-      booksAdded: 3
+      booksAdded: 3,
+      totalReviews: 5
     }
   ])
 
@@ -127,7 +130,8 @@ export default function AdminUsers() {
                         <th>Rol</th>
                         <th>Estado</th>
                         <th>Fecha Registro</th>
-                        <th>Libros Agregados</th>
+                        <th>Libros</th>
+                        <th>Reseñas</th>
                         <th>Acciones</th>
                       </tr>
                     </thead>
@@ -141,6 +145,8 @@ export default function AdminUsers() {
                               </div>
                               <div>
                                 <strong>{user.name}</strong>
+                                <br />
+                                <small className="text-muted">ID: {user.id}</small>
                               </div>
                             </div>
                           </td>
@@ -156,13 +162,18 @@ export default function AdminUsers() {
                             </span>
                           </td>
                           <td>{user.joinDate}</td>
-                          <td>{user.booksAdded}</td>
+                          <td>
+                            <span className="badge bg-primary">{user.booksAdded}</span>
+                          </td>
+                          <td>
+                            <span className="badge bg-success">{user.totalReviews}</span>
+                          </td>
                           <td>
                             <div className="d-flex gap-1 flex-nowrap">
                               <Link 
                                 to={`/admin/users/${user.id}`}
                                 className="btn btn-sm btn-outline-primary"
-                                title="Ver perfil"
+                                title="Ver perfil completo"
                               >
                                 <i className="fas fa-eye"></i>
                               </Link>
@@ -186,6 +197,42 @@ export default function AdminUsers() {
                       ))}
                     </tbody>
                   </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Stats Summary */}
+            <div className="row mt-4">
+              <div className="col-md-3">
+                <div className="card bg-primary text-white">
+                  <div className="card-body text-center">
+                    <h3>{users.length}</h3>
+                    <p className="mb-0">Total Usuarios</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="card bg-success text-white">
+                  <div className="card-body text-center">
+                    <h3>{users.filter(u => u.status === 'active').length}</h3>
+                    <p className="mb-0">Usuarios Activos</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="card bg-warning text-dark">
+                  <div className="card-body text-center">
+                    <h3>{users.filter(u => u.status === 'blocked').length}</h3>
+                    <p className="mb-0">Usuarios Bloqueados</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="card bg-info text-white">
+                  <div className="card-body text-center">
+                    <h3>{users.filter(u => u.role === 'author').length}</h3>
+                    <p className="mb-0">Autores</p>
+                  </div>
                 </div>
               </div>
             </div>

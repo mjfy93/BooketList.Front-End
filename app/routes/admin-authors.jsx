@@ -21,15 +21,6 @@ export default function AdminAuthors() {
       booksCount: 18,
       joinDate: '2023-07-22',
       verified: true
-    },
-    {
-      id: 3,
-      name: 'Mario Vargas Llosa',
-      email: 'mario@autor.com',
-      status: 'pending',
-      booksCount: 5,
-      joinDate: '2024-01-10',
-      verified: false
     }
   ])
 
@@ -147,15 +138,27 @@ export default function AdminAuthors() {
                         <tr key={author.id}>
                           <td>
                             <div className="d-flex align-items-center">
-                              <div className="avatar bg-info text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style={{width: '40px', height: '40px'}}>
-                                {author.name.charAt(0)}
-                              </div>
-                              <div>
-                                <strong>{author.name}</strong>
-                              </div>
+                              <Link 
+                                to={`/admin/authors/${author.id}`}
+                                className="text-decoration-none d-flex align-items-center"
+                              >
+                                <div className="avatar bg-info text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style={{width: '40px', height: '40px'}}>
+                                  {author.name.charAt(0)}
+                                </div>
+                                <div>
+                                  <strong>{author.name}</strong>
+                                </div>
+                              </Link>
                             </div>
                           </td>
-                          <td>{author.email}</td>
+                          <td>
+                            <a 
+                              href={`mailto:${author.email}`}
+                              className="text-decoration-none"
+                            >
+                              {author.email}
+                            </a>
+                          </td>
                           <td>
                             <span className={`badge ${author.status === 'active' ? 'bg-success' : 'bg-warning'}`}>
                               {author.status === 'active' ? 'Activo' : 'Pendiente'}
@@ -167,7 +170,12 @@ export default function AdminAuthors() {
                             </span>
                           </td>
                           <td>
-                            <span className="badge bg-primary">{author.booksCount} libros</span>
+                            <Link 
+                              to={`/admin/authors/${author.id}/books`}
+                              className="text-decoration-none"
+                            >
+                              <span className="badge bg-primary">{author.booksCount} libros</span>
+                            </Link>
                           </td>
                           <td>{author.joinDate}</td>
                           <td>

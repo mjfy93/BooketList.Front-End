@@ -76,7 +76,7 @@ const Register = () => {
     };
 
     return (
-        <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
+        <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-dark">
             <div className="card shadow-lg border-0" style={{ maxWidth: '400px', width: '100%' }}>
                 <div className="card-body p-4">
                     <h2 className="card-title text-center mb-2">Crear Cuenta</h2>

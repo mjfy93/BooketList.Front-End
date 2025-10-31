@@ -35,17 +35,17 @@ export default function Home() {
             <form>
               <h2>Iniciar sesión</h2>
               <div className="mb-3">
-                <label for="correoElectrónico" className="form-label">Correo electrónico</label>
+                <label htmlFor="correoElectrónico" className="form-label">Correo electrónico</label>
                 <input type="email" className="form-control" id="correoElectrónico" aria-describedby="emailHelp" />
 
               </div>
               <div className="mb-3">
-                <label for="contraseña" className="form-label">Contraseña</label>
+                <label htmlFor="contraseña" className="form-label">Contraseña</label>
                 <input type="password" className="form-control" id="contraseña" />
               </div>
 
               <button type="submit" className="btn btn-light">Iniciar sesión</button>
-              <p>¿No tienes una cuenta? <Link to={'/#'}>Crea una cuenta.</Link></p>
+              <p>¿No tienes una cuenta? <Link to={'/register'}>Crea una cuenta.</Link></p>
             </form>
           </div>
 

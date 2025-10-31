@@ -29,25 +29,25 @@ type Pages = {
   "/detalle": {
     params: {};
   };
-  "/resena": {
-    params: {};
-  };
   "/users": {
     params: {};
   };
-  "/biblioteca": {
-    params: {};
-  };
   "/contact": {
-    params: {};
-  };
-  "/profile": {
     params: {};
   };
   "/login": {
     params: {};
   };
   "/register": {
+    params: {};
+  };
+  "/resena": {
+    params: {};
+  };
+  "/biblioteca": {
+    params: {};
+  };
+  "/profile": {
     params: {};
   };
   "/admin/login": {
@@ -71,34 +71,13 @@ type Pages = {
   "/admin/authors/new": {
     params: {};
   };
-  "/admin/books/edit/:id": {
-    params: {
-      "id": string;
-    };
-  };
-  "/admin/authors/:id": {
-    params: {
-      "id": string;
-    };
-  };
-  "/admin/users/:id": {
-    params: {
-      "id": string;
-    };
-  };
-  "/admin/authors/:id/books": {
-    params: {
-      "id": string;
-    };
-  };
 };
 
 type RouteFiles = {
   "root.jsx": {
     id: "root";
-    page: "/" | "/libros" | "/autores" | "/generosTodos" | "/genero" | "/detalle" | "/resena" | "/users" | "/biblioteca" | "/contact" | "/login" | "/register" | "/admin/login" | "/admin" | "/admin/users" | "/admin/books" | "/admin/authors" | "/admin/books/new" | "/admin/authors/new" | "/admin/books/edit/:id" | "/admin/authors/:id" | "/admin/users/:id" | "/admin/authors/:id/books";
-
-
+    page: "/" | "/libros" | "/autores" | "/generosTodos" | "/genero" | "/detalle" | "/users" | "/contact" | "/login" | "/register" | "/resena" | "/biblioteca" | "/profile" | "/admin/login" | "/admin" | "/admin/users" | "/admin/books" | "/admin/authors" | "/admin/books/new" | "/admin/authors/new";
+  };
   "routes/_index.jsx": {
     id: "routes/_index";
     page: "/";
@@ -123,25 +102,13 @@ type RouteFiles = {
     id: "routes/_detalle";
     page: "/detalle";
   };
-  "routes/_resena.jsx": {
-    id: "routes/_resena";
-    page: "/resena";
-  };
   "routes/users.jsx": {
     id: "routes/users";
     page: "/users";
   };
-  "routes/_bibliotecaUsuario.jsx": {
-    id: "routes/_bibliotecaUsuario";
-    page: "/biblioteca";
-  };
   "routes/contact.jsx": {
     id: "routes/contact";
     page: "/contact";
-  };
-  "routes/user-profile.jsx": {
-    id: "routes/user-profile";
-    page: "/profile";
   };
   "routes/login.jsx": {
     id: "routes/login";
@@ -150,6 +117,18 @@ type RouteFiles = {
   "routes/register.jsx": {
     id: "routes/register";
     page: "/register";
+  };
+  "routes/_resena.jsx": {
+    id: "routes/_resena";
+    page: "/resena";
+  };
+  "routes/_bibliotecaUsuario.jsx": {
+    id: "routes/_bibliotecaUsuario";
+    page: "/biblioteca";
+  };
+  "routes/user-profile.jsx": {
+    id: "routes/user-profile";
+    page: "/profile";
   };
   "routes/admin-login.jsx": {
     id: "routes/admin-login";
@@ -179,22 +158,6 @@ type RouteFiles = {
     id: "routes/admin-new-author";
     page: "/admin/authors/new";
   };
-  "routes/admin-edit-book.jsx": {
-    id: "routes/admin-edit-book";
-    page: "/admin/books/edit/:id";
-  };
-  "routes/admin-author-detail.jsx": {
-    id: "routes/admin-author-detail";
-    page: "/admin/authors/:id";
-  };
-  "routes/admin-user-detail.jsx": {
-    id: "routes/admin-user-detail";
-    page: "/admin/users/:id";
-  };
-  "routes/admin-author-books.jsx": {
-    id: "routes/admin-author-books";
-    page: "/admin/authors/:id/books";
-  };
 };
 
 type RouteModules = {
@@ -205,13 +168,13 @@ type RouteModules = {
   "routes/_generosTodos": typeof import("./app/routes/_generosTodos.jsx");
   "routes/_genero": typeof import("./app/routes/_genero.jsx");
   "routes/_detalle": typeof import("./app/routes/_detalle.jsx");
-  "routes/_resena": typeof import("./app/routes/_resena.jsx");
   "routes/users": typeof import("./app/routes/users.jsx");
-  "routes/_bibliotecaUsuario": typeof import("./app/routes/_bibliotecaUsuario.jsx");
   "routes/contact": typeof import("./app/routes/contact.jsx");
-  "routes/user-profile": typeof import("./app/routes/user-profile.jsx");
   "routes/login": typeof import("./app/routes/login.jsx");
   "routes/register": typeof import("./app/routes/register.jsx");
+  "routes/_resena": typeof import("./app/routes/_resena.jsx");
+  "routes/_bibliotecaUsuario": typeof import("./app/routes/_bibliotecaUsuario.jsx");
+  "routes/user-profile": typeof import("./app/routes/user-profile.jsx");
   "routes/admin-login": typeof import("./app/routes/admin-login.jsx");
   "routes/admin-dashboard": typeof import("./app/routes/admin-dashboard.jsx");
   "routes/admin-users": typeof import("./app/routes/admin-users.jsx");
@@ -219,10 +182,4 @@ type RouteModules = {
   "routes/admin-authors": typeof import("./app/routes/admin-authors.jsx");
   "routes/admin-new-book": typeof import("./app/routes/admin-new-book.jsx");
   "routes/admin-new-author": typeof import("./app/routes/admin-new-author.jsx");
-  "routes/admin-edit-book": typeof import("./app/routes/admin-edit-book.jsx");
-  "routes/admin-author-detail": typeof import("./app/routes/admin-author-detail.jsx");
-  "routes/admin-user-detail": typeof import("./app/routes/admin-user-detail.jsx");
-  "routes/admin-author-books": typeof import("./app/routes/admin-author-books.jsx");
-  "routes/login": typeof import("./app/routes/login.jsx");
-  "routes/register": typeof import("./app/routes/register.jsx");
 };

@@ -58,12 +58,6 @@ export default function Navbar() {
               <button className="btn btn-outline-light" type="submit">Buscar</button>
             </form>
           </li>
-          
-          <li className='nav-item p-2'>
-            <Link to="/register" className="nav-link">
-              Crear Cuenta
-            </Link>
-          </li>
           <li className='nav-item p-2'>
             <button
               className={`btn btn-outline-${

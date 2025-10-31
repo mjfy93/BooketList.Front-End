@@ -11,9 +11,7 @@ export default [
     { path: '/register', file: 'routes/register.jsx' },
     { path: '/resena', file: 'routes/_resena.jsx' },
     { path: '/biblioteca', file: 'routes/_bibliotecaUsuario.jsx' },
-    {path: '/contact', file: 'routes/contact.jsx'},
-    { path: '/login', file: 'routes/login.jsx' },          // Nueva ruta
-    { path: '/register', file: 'routes/register.jsx' },    // Nueva ruta
+    { path: '/profile', file: 'routes/user-profile.jsx' },
     { path: '/admin/login', file: 'routes/admin-login.jsx' },
     { path: '/admin', file: 'routes/admin-dashboard.jsx' },
     { path: '/admin/users', file: 'routes/admin-users.jsx' },

@@ -1,20 +1,20 @@
 import { useLoaderData, Link, useParams } from "react-router";
 
-// import './styles/stylesHome.css'
-
-
-// export async function loader() {
-//   const response = await fetch('https://jsonplaceholder.typicode.com/posts')
 
 
 
-//   return response.json()
-// }
+export async function loader() {
+  const response = await fetch('http://127.0.0.1:5000/api/books')
+
+
+
+  return response.json()
+}
 
 export default function Home() {
-  //   const data = useLoaderData().slice(0, 10);
+    const data = useLoaderData();
 
-  //  console.log(data);
+   console.log(data);
 
 
 

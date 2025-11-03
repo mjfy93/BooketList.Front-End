@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 export default function HtmlShell({
   children,
-  title = 'React Router Template'
+  title = 'BooketList'
 }) {
   const { theme } = useTheme()
 

@@ -1,16 +1,14 @@
-// routes/admin-user-detail.jsx
+// routes/user-profile.jsx - VERSIÓN CORREGIDA
 import { useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link, useParams } from 'react-router' // ✅ Agregar useParams aquí
 
-export default function AdminUserDetail() {
-  const { id } = useParams()
+export default function UserProfile() {
+  const { id } = useParams() // ✅ Ahora useParams está definido
   
   const [user] = useState({
     id: parseInt(id),
     name: 'Juan Pérez',
     email: 'juan@email.com',
-    role: 'user',
-    status: 'active',
     joinDate: '2024-01-15',
     lastLogin: '2024-10-24'
   })
@@ -69,36 +67,31 @@ export default function AdminUserDetail() {
   return (
     <div className="container-fluid">
       <div className="row">
-        {/* Sidebar */}
-        <div className="col-md-3 col-lg-2 bg-dark text-white vh-100 position-fixed">
-          <div className="p-3">
-            <h4 className="text-center mb-4">BooketList Admin</h4>
-            <nav className="nav flex-column">
-              <Link to="/admin" className="nav-link text-white mb-2">
-                <i className="fas fa-tachometer-alt me-2"></i>Dashboard
-              </Link>
-              <Link to="/admin/users" className="nav-link text-white mb-2 active">
-                <i className="fas fa-users me-2"></i>Gestión de Usuarios
-              </Link>
-              <Link to="/admin/books" className="nav-link text-white mb-2">
-                <i className="fas fa-book me-2"></i>Gestión de Libros
-              </Link>
-              <Link to="/admin/authors" className="nav-link text-white mb-2">
-                <i className="fas fa-pen-fancy me-2"></i>Gestión de Autores
-              </Link>
-              <Link to="/" className="nav-link text-warning mt-4">
-                <i className="fas fa-sign-out-alt me-2"></i>Volver al Sitio
-              </Link>
-            </nav>
+        {/* Header Simple */}
+        <div className="col-12 bg-primary text-white p-3 mb-4">
+          <div className="d-flex justify-content-between align-items-center">
+            <h4 className="mb-0">BooketList</h4>
+            <div className="d-flex align-items-center">
+              <span className="me-3">{user.name}</span>
+              <div className="dropdown">
+                <button className="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                  <i className="fas fa-user-circle"></i>
+                </button>
+                <ul className="dropdown-menu">
+                  <li><a className="dropdown-item" href="#">Mi Perfil</a></li>
+                  <li><a className="dropdown-item" href="#">Cerrar Sesión</a></li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="col-md-9 col-lg-10 ms-auto">
+        <div className="col-12">
           <div className="p-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
-              <h1>Perfil de Usuario</h1>
-              <Link to="/admin/users" className="btn btn-outline-secondary">
-                <i className="fas fa-arrow-left me-2"></i>Volver a Usuarios
+              <h1>Mi Perfil</h1>
+              <Link to="/" className="btn btn-outline-secondary">
+                <i className="fas fa-arrow-left me-2"></i>Volver al Inicio
               </Link>
             </div>
 
@@ -116,12 +109,7 @@ export default function AdminUserDetail() {
                         <h4 className="mb-1">{user.name}</h4>
                         <p className="text-muted mb-1">{user.email}</p>
                         <div className="d-flex gap-2">
-                          <span className={`badge ${user.role === 'author' ? 'bg-info' : 'bg-secondary'}`}>
-                            {user.role === 'author' ? 'Autor' : 'Usuario'}
-                          </span>
-                          <span className={`badge ${user.status === 'active' ? 'bg-success' : 'bg-danger'}`}>
-                            {user.status === 'active' ? 'Activo' : 'Bloqueado'}
-                          </span>
+                          <span className="badge bg-secondary">Usuario</span>
                         </div>
                       </div>
                     </div>
@@ -251,7 +239,7 @@ export default function AdminUserDetail() {
 
                 {/* Reseñas Recientes */}
                 <div className="card">
-                  <div className="card-header bg-purple text-white">
+                  <div className="card-header" style={{backgroundColor: '#6f42c1', color: 'white'}}>
                     <h5 className="card-title mb-0">
                       <i className="fas fa-star me-2"></i>
                       Reseñas Recientes ({reviews.length})
@@ -287,12 +275,6 @@ export default function AdminUserDetail() {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        .bg-purple {
-          background-color: #6f42c1 !important;
-        }
-      `}</style>
     </div>
   )
 }

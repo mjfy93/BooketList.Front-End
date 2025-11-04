@@ -65,19 +65,19 @@ export default function AdminUsers() {
           <div className="p-3">
             <h4 className="text-center mb-4">BooketList Admin</h4>
             <nav className="nav flex-column">
-              <Link to="/admin" className="nav-link text-dark mb-2">
+              <Link to="/admin" className="nav-link mb-2">
                 <i className="fas fa-tachometer-alt me-2"></i>Dashboard
               </Link>
-              <Link to="/admin/users" className="nav-link text-dark mb-2 active">
+              <Link to="/admin/users" className="nav-link mb-2">
                 <i className="fas fa-users me-2"></i>Gestión de Usuarios
               </Link>
-              <Link to="/admin/books" className="nav-link text-dark mb-2">
+              <Link to="/admin/books" className="nav-link mb-2">
                 <i className="fas fa-book me-2"></i>Gestión de Libros
               </Link>
-              <Link to="/admin/authors" className="nav-link text-dark mb-2">
+              <Link to="/admin/authors" className="nav-link mb-2">
                 <i className="fas fa-pen-fancy me-2"></i>Gestión de Autores
               </Link>
-              <Link to="/" className="nav-link text-dark mt-4">
+              <Link to="/" className="nav-link mt-4">
                 <i className="fas fa-sign-out-alt me-2"></i>Volver al Sitio
               </Link>
             </nav>

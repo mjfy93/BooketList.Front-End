@@ -41,23 +41,23 @@ export default function AdminEditBook() {
     <div className="container-fluid">
       <div className="row">
         {/* Sidebar */}
-        <div className="col-md-3 col-lg-2 bg-dark text-white vh-100 position-fixed">
+         <div className="col-md-3 col-lg-2 vh-100 position-fixed">
           <div className="p-3">
             <h4 className="text-center mb-4">BooketList Admin</h4>
             <nav className="nav flex-column">
-              <Link to="/admin" className="nav-link text-white mb-2">
+              <Link to="/admin" className="nav-link mb-2">
                 <i className="fas fa-tachometer-alt me-2"></i>Dashboard
               </Link>
-              <Link to="/admin/users" className="nav-link text-white mb-2">
+              <Link to="/admin/users" className="nav-link mb-2">
                 <i className="fas fa-users me-2"></i>Gestión de Usuarios
               </Link>
-              <Link to="/admin/books" className="nav-link text-white mb-2 active">
+              <Link to="/admin/books" className="nav-link mb-2">
                 <i className="fas fa-book me-2"></i>Gestión de Libros
               </Link>
-              <Link to="/admin/authors" className="nav-link text-white mb-2">
+              <Link to="/admin/authors" className="nav-link mb-2">
                 <i className="fas fa-pen-fancy me-2"></i>Gestión de Autores
               </Link>
-              <Link to="/" className="nav-link text-warning mt-4">
+              <Link to="/" className="nav-link mt-4">
                 <i className="fas fa-sign-out-alt me-2"></i>Volver al Sitio
               </Link>
             </nav>

@@ -7,9 +7,15 @@ export async function loader() {
   return response.json();
 }
 
+// Add this to make it client-only
+export const clientLoader = async () => {
+  const response = await fetch('https://backend-gold-alpha-80.vercel.app/api/books');
+  return response.json();
+};
+
 export default function Home() {
   const data = useLoaderData();
-  const { user, isAuthenticated, login, logout, authFetch } = useAuth();
+  const { user, isAuthenticated, login, logout, authFetch, loading } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -48,6 +54,17 @@ export default function Home() {
   const handleLogout = () => {
     logout();
   };
+
+  // Show loading state while checking auth
+  if (loading) {
+    return (
+      <div className="text-center my-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+    );
+  }
 
   // If user is NOT authenticated, show login form
   if (!isAuthenticated()) {
@@ -111,7 +128,7 @@ export default function Home() {
     );
   }
 
-
+  // If user IS authenticated, show personalized home
   return (
     <div className="homeContainer text-start my-5 px-4">
       <div className="card">

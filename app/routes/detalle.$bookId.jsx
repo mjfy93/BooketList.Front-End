@@ -38,26 +38,19 @@ export default function DetalleLibro() {
                         className="img-fluid rounded shadow"
                         style={{ height: '300px', objectFit: 'cover' }}
                     />
-                </div>
-
-                <div className="col-md-8">
-                    <h1>{book.title}</h1>
-                    <h3 className="text-muted">{book.author}</h3>
-                    <span className="badge bg-primary mb-3">{book.genre}</span>
-
-                    <p className="lead mt-3">{book.description}</p>
-
-                    <div className="mt-4">
-                        {book.amazon_asin && (
-                            <a
-                                href={`https://www.amazon.com/dp/${book.amazon_asin}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn btn-warning me-2"
-                            >
-                                Ver en Amazon
-                            </a>
-                        )}
+                    <div className="d-flex flex-column">
+                        
+                            {book.amazon_asin && (
+                                <a
+                                    href={`https://www.amazon.com/dp/${book.amazon_asin}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-warning me-2"
+                                >
+                                    Comprar este libro
+                                </a>
+                            )}
+                        
 
                         <Link
                             to={`/generosTodos/${genreSlug}`}
@@ -65,7 +58,20 @@ export default function DetalleLibro() {
                         >
                             Ver más libros como este
                         </Link>
+                        <a href="#reviewpage">5 stars</a> //the stars should change colors, full when clicked or hover, empty otherwise.
+                        <button></button> //dropdown button with options /Quiero Leer, Leyendo or
+
+
                     </div>
+                </div>
+                <div className="col-md-8">
+                    <h1>{book.title}</h1>
+                    <h3 className="text-muted">{book.author}</h3>
+                    <span className="badge bg-primary mb-3">{book.genre}</span>
+
+                    <p className="lead mt-3">{book.description}</p>
+
+
                 </div>
             </div>
         </div>

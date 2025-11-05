@@ -7,11 +7,7 @@ export async function loader() {
   return response.json();
 }
 
-// Add this to make it client-only
-export const clientLoader = async () => {
-  const response = await fetch('https://backend-gold-alpha-80.vercel.app/api/books');
-  return response.json();
-};
+
 
 export default function Home() {
   const data = useLoaderData();
@@ -22,7 +18,7 @@ export default function Home() {
   const [error, setError] = useState('');
   const [currentReadings, setCurrentReadings] = useState([]);
 
-  // Fetch user's biblioteca when authenticated
+ 
   useEffect(() => {
     if (isAuthenticated()) {
       authFetch('https://backend-gold-alpha-80.vercel.app/api/biblioteca')
@@ -55,7 +51,7 @@ export default function Home() {
     logout();
   };
 
-  // Show loading state while checking auth
+
   if (loading) {
     return (
       <div className="text-center my-5">
@@ -66,7 +62,7 @@ export default function Home() {
     );
   }
 
-  // If user is NOT authenticated, show login form
+  
   if (!isAuthenticated()) {
     return (
       <div className="row">
@@ -83,7 +79,7 @@ export default function Home() {
 
             {error && (
               <div className="alert alert-danger" role="alert">
-                {error}
+                 Credenciales incorrectas. Inténtalo de nuevo.
               </div>
             )}
 
@@ -128,7 +124,7 @@ export default function Home() {
     );
   }
 
-  // If user IS authenticated, show personalized home
+ 
   return (
     <div className="homeContainer text-start my-5 px-4">
       <div className="card">

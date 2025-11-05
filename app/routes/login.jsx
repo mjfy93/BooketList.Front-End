@@ -26,28 +26,12 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:5000/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: formData.email,
-                    password: formData.password
-                }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                login({
-                    token: data.access_token,
-                    user_id: data.user_id,
-                    username: data.username
-                });
+            const result = await login(formData.email, formData.password);
+            
+            if (result.success) {
                 navigate('/');
             } else {
-                setError(data.error || 'Error en el inicio de sesión');
+                setError(result.error || 'Error en el inicio de sesión');
             }
         } catch (err) {
             console.error('Error de login:', err);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { useAuth } from '../context/useAuth';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { useAuth } from '../context/AuthContext';
+
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -41,8 +41,8 @@ const Register = () => {
         }
 
         try {
-            
-            const response = await fetch('http://localhost:5000/api/auth/register', {
+
+            const response = await fetch('http://127.0.0.1:5000/api/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -81,18 +81,18 @@ const Register = () => {
                 <div className="card-body p-4">
                     <h2 className="card-title text-center mb-2">Crear Cuenta</h2>
                     <p className="text-center text-muted mb-4">Únete a nuestra biblioteca virtual</p>
-                    
+
                     {error && (
                         <div className="alert alert-danger alert-dismissible fade show" role="alert">
                             {error}
-                            <button 
-                                type="button" 
-                                className="btn-close" 
+                            <button
+                                type="button"
+                                className="btn-close"
                                 onClick={() => setError('')}
                             ></button>
                         </div>
                     )}
-                    
+
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
                             <label htmlFor="username" className="form-label">
@@ -170,8 +170,8 @@ const Register = () => {
                             />
                         </div>
 
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             className="btn btn-primary w-100 py-2"
                             disabled={loading}
                         >

@@ -2,7 +2,7 @@
 import { useLoaderData } from 'react-router'
 
 export async function loader({ params }) {
-  const response = await fetch('https://backend-gold-alpha-80.vercel.app/users')
+  const response = await fetch('http://127.0.0.1:5000users')
   const json = response.json()
 
   return json

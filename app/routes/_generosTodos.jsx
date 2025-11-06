@@ -2,7 +2,7 @@ import { useLoaderData, Link } from "react-router";
 
 export async function loader() {
 
-    const genresResponse = await fetch('https://backend-gold-alpha-80.vercel.app/api/books/genres');
+    const genresResponse = await fetch('http://127.0.0.1:5000/api/books/genres');
     const genresData = await genresResponse.json();
 
 
@@ -14,7 +14,7 @@ export async function loader() {
                 .replace(/\s+/g, '-');
 
             const booksResponse = await fetch(
-                `https://backend-gold-alpha-80.vercel.app/api/books/genre/${genreSlug}`
+                `http://127.0.0.1:5000/api/books/genre/${genreSlug}`
             );
             const books = await booksResponse.json();
 

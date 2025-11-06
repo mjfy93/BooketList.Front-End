@@ -4,7 +4,7 @@ export async function loader({ params }) {
     const { slug } = params;
 
 
-    const response = await fetch(`https://backend-gold-alpha-80.vercel.app/api/books/genre/${slug}`);
+    const response = await fetch(`http://127.0.0.1:5000/api/books/genre/${slug}`);
     const books = await response.json();
 
 

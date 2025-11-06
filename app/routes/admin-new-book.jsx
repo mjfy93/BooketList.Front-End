@@ -1,40 +1,89 @@
 // routes/admin-new-book.jsx
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate, Navigate } from 'react-router'
+import { useAdmin } from '../context/AdminContext.jsx'
 
 export default function AdminNewBook() {
   const navigate = useNavigate()
+  const { adminFetch, isAdminLoggedIn, adminLogout } = useAdmin()
   
-  const [book, setBook] = useState({
-    title: '',
-    author: '',
-    genre: 'Ficción',
-    description: '',
-    isbn: '',
-    publishedDate: '',
-    status: 'draft',
-    coverImage: 'https://th.bing.com/th/id/OIF.Y2rN6VOb3ioE4J1sqv1huw?w=206&h=206&c=7&r=0&o=7&pid=1.7&rm=3',
-    amazonLink: ''
-  })
+  // Redirigir si no está logueado
+  if (!isAdminLoggedIn()) {
+    return <Navigate to="api/admin/login" replace />
+  }
 
-  const handleSave = () => {
-    if (!book.title || !book.author) {
-      alert('Por favor, completa los campos obligatorios (Título y Autor)')
+  const [book, setBook] = useState({
+    titulo_libro: '',
+    id_autor: '',
+    genero_libro: 'Ficción',
+    descripcion_libros: '',
+    enlace_portada_libro: '',
+    enlace_asin_libro: ''
+  })
+  const [authors, setAuthors] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    loadAuthors()
+  }, [])
+
+  const loadAuthors = async () => {
+    try {
+      const response = await adminFetch('/admin/authors/list')
+      if (response.ok) {
+        const data = await response.json()
+        setAuthors(data)
+      }
+    } catch (error) {
+      console.error('Error loading authors:', error)
+    }
+  }
+
+  const handleSave = async () => {
+    if (!book.titulo_libro || !book.id_autor || !book.genero_libro) {
+      alert('Por favor, completa los campos obligatorios (Título, Autor y Género)')
       return
     }
-    alert('Libro creado correctamente')
-    navigate('/admin/books')
+
+    setLoading(true)
+    setError('')
+
+    try {
+      const response = await adminFetch('/admin/books/create', {
+        method: 'POST',
+        body: JSON.stringify(book)
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        alert('Libro creado correctamente')
+        navigate('/admin/books')
+      } else {
+        const errorData = await response.json()
+        setError(errorData.message || 'Error al crear libro')
+      }
+    } catch (error) {
+      setError('Error de conexión: ' + error.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleInputChange = (field, value) => {
     setBook({...book, [field]: value})
   }
 
+  const handleLogout = () => {
+    if (window.confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+      adminLogout()
+    }
+  }
+
   return (
     <div className="container-fluid">
       <div className="row">
-        {/* Sidebar Corregido */}
-         <div className="col-md-3 col-lg-2 vh-100 position-fixed">
+        <div className="col-md-3 col-lg-2 vh-100 position-fixed">
           <div className="p-3">
             <h4 className="text-center mb-4">BooketList Admin</h4>
             <nav className="nav flex-column">
@@ -50,9 +99,9 @@ export default function AdminNewBook() {
               <Link to="/admin/authors" className="nav-link mb-2">
                 <i className="fas fa-pen-fancy me-2"></i>Gestión de Autores
               </Link>
-              <Link to="/" className="nav-link mt-4">
-                <i className="fas fa-sign-out-alt me-2"></i>Volver al Sitio
-              </Link>
+              <button onClick={handleLogout} className="nav-link mt-4 text-start border-0 bg-transparent">
+                <i className="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+              </button>
             </nav>
           </div>
         </div>
@@ -66,6 +115,13 @@ export default function AdminNewBook() {
               </Link>
             </div>
 
+            {error && (
+              <div className="alert alert-danger" role="alert">
+                {error}
+              </div>
+            )}
+
+
             <div className="row">
               <div className="col-md-8">
                 <div className="card">
@@ -73,7 +129,7 @@ export default function AdminNewBook() {
                     <h5 className="card-title mb-0">Información del Libro</h5>
                   </div>
                   <div className="card-body">
-                    <form>
+                    <form onSubmit={(e) => e.preventDefault()}>
                       <div className="row">
                         <div className="col-md-6 mb-3">
                           <label className="form-label">Título *</label>
@@ -81,19 +137,26 @@ export default function AdminNewBook() {
                             type="text"
                             className="form-control"
                             placeholder="Ingresa el título del libro"
-                            value={book.title}
-                            onChange={(e) => handleInputChange('title', e.target.value)}
+                            value={book.titulo_libro}
+                            onChange={(e) => handleInputChange('titulo_libro', e.target.value)}
+                            required
                           />
                         </div>
                         <div className="col-md-6 mb-3">
                           <label className="form-label">Autor *</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Nombre del autor"
-                            value={book.author}
-                            onChange={(e) => handleInputChange('author', e.target.value)}
-                          />
+                          <select
+                            className="form-select"
+                            value={book.id_autor}
+                            onChange={(e) => handleInputChange('id_autor', e.target.value)}
+                            required
+                          >
+                            <option value="">Seleccionar autor</option>
+                            {authors.map(author => (
+                              <option key={author.id_autor} value={author.id_autor}>
+                                {author.nombre_autor} {author.apellido_autor}
+                              </option>
+                            ))}
+                          </select>
                         </div>
                       </div>
 
@@ -102,8 +165,9 @@ export default function AdminNewBook() {
                           <label className="form-label">Género *</label>
                           <select 
                             className="form-select"
-                            value={book.genre}
-                            onChange={(e) => handleInputChange('genre', e.target.value)}
+                            value={book.genero_libro}
+                            onChange={(e) => handleInputChange('genero_libro', e.target.value)}
+                            required
                           >
                             <option value="Ficción">Ficción</option>
                             <option value="Ciencia Ficción">Ciencia Ficción</option>
@@ -111,44 +175,24 @@ export default function AdminNewBook() {
                             <option value="Romance">Romance</option>
                             <option value="Misterio">Misterio</option>
                             <option value="Biografía">Biografía</option>
+                            <option value="Historia">Historia</option>
+                            <option value="Autoayuda">Autoayuda</option>
                           </select>
-                        </div>
-                        <div className="col-md-6 mb-3">
-                          <label className="form-label">ISBN</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="ISBN del libro"
-                            value={book.isbn}
-                            onChange={(e) => handleInputChange('isbn', e.target.value)}
-                          />
                         </div>
                       </div>
 
                       <div className="mb-3">
-                        <label className="form-label">Portada del Libro</label>
-                        <div className="row">
-                          <div className="col-md-4">
-                            <img 
-                              src={book.coverImage} 
-                              alt="Portada del libro"
-                              className="img-fluid rounded shadow-sm mb-3"
-                              style={{maxHeight: '200px', objectFit: 'cover'}}
-                            />
-                          </div>
-                          <div className="col-md-8">
-                            <input
-                              type="url"
-                              className="form-control"
-                              placeholder="URL de la portada..."
-                              value={book.coverImage}
-                              onChange={(e) => handleInputChange('coverImage', e.target.value)}
-                            />
-                            <small className="form-text text-muted">
-                              Ingresa la URL de la imagen de portada
-                            </small>
-                          </div>
-                        </div>
+                        <label className="form-label">Portada del Libro (URL)</label>
+                        <input
+                          type="url"
+                          className="form-control"
+                          placeholder="https://ejemplo.com/portada.jpg"
+                          value={book.enlace_portada_libro}
+                          onChange={(e) => handleInputChange('enlace_portada_libro', e.target.value)}
+                        />
+                        <small className="form-text text-muted">
+                          Ingresa la URL de la imagen de portada
+                        </small>
                       </div>
 
                       <div className="mb-3">
@@ -157,8 +201,8 @@ export default function AdminNewBook() {
                           type="url"
                           className="form-control"
                           placeholder="https://www.amazon.com/..."
-                          value={book.amazonLink}
-                          onChange={(e) => handleInputChange('amazonLink', e.target.value)}
+                          value={book.enlace_asin_libro}
+                          onChange={(e) => handleInputChange('enlace_asin_libro', e.target.value)}
                         />
                         <small className="form-text text-muted">
                           Enlace directo para comprar el libro en Amazon
@@ -171,38 +215,28 @@ export default function AdminNewBook() {
                           className="form-control"
                           rows="4"
                           placeholder="Descripción del libro..."
-                          value={book.description}
-                          onChange={(e) => handleInputChange('description', e.target.value)}
+                          value={book.descripcion_libros}
+                          onChange={(e) => handleInputChange('descripcion_libros', e.target.value)}
                         ></textarea>
                       </div>
 
-                      <div className="row">
-                        <div className="col-md-6 mb-3">
-                          <label className="form-label">Fecha de Publicación</label>
-                          <input
-                            type="date"
-                            className="form-control"
-                            value={book.publishedDate}
-                            onChange={(e) => handleInputChange('publishedDate', e.target.value)}
-                          />
-                        </div>
-                        <div className="col-md-6 mb-3">
-                          <label className="form-label">Estado</label>
-                          <select 
-                            className="form-select"
-                            value={book.status}
-                            onChange={(e) => handleInputChange('status', e.target.value)}
-                          >
-                            <option value="draft">Borrador</option>
-                            <option value="published">Publicado</option>
-                            <option value="archived">Archivado</option>
-                          </select>
-                        </div>
-                      </div>
-
                       <div className="d-flex gap-2">
-                        <button type="button" className="btn btn-primary" onClick={handleSave}>
-                          <i className="fas fa-plus me-2"></i>Crear Libro
+                        <button 
+                          type="button" 
+                          className="btn btn-primary" 
+                          onClick={handleSave}
+                          disabled={loading}
+                        >
+                          {loading ? (
+                            <>
+                              <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                              Creando...
+                            </>
+                          ) : (
+                            <>
+                              <i className="fas fa-plus me-2"></i>Crear Libro
+                            </>
+                          )}
                         </button>
                         <Link to="/admin/books" className="btn btn-outline-secondary">
                           Cancelar
@@ -219,15 +253,29 @@ export default function AdminNewBook() {
                     <h5 className="card-title mb-0">Vista Previa</h5>
                   </div>
                   <div className="card-body text-center">
-                    <img 
-                      src={book.coverImage} 
-                      alt="Portada del libro"
-                      className="img-fluid rounded shadow mb-3"
-                      style={{maxHeight: '250px', objectFit: 'cover'}}
-                    />
-                    <h5>{book.title || 'Título del libro'}</h5>
-                    <p className="text-muted">{book.author || 'Nombre del autor'}</p>
-                    <span className="badge bg-secondary">{book.genre}</span>
+                    {book.enlace_portada_libro ? (
+                      <img 
+                        src={book.enlace_portada_libro} 
+                        alt="Vista previa de portada"
+                        className="rounded mb-3"
+                        style={{width: '150px', height: '200px', objectFit: 'cover'}}
+                        onError={(e) => {
+                          e.target.style.display = 'none'
+                        }}
+                      />
+                    ) : (
+                      <div className="bg-light rounded d-flex align-items-center justify-content-center mb-3" 
+                           style={{width: '150px', height: '200px', margin: '0 auto'}}>
+                        <i className="fas fa-book fa-3x text-muted"></i>
+                      </div>
+                    )}
+                    <h5>{book.titulo_libro || 'Título del libro'}</h5>
+                    <p className="text-muted">
+                      {authors.find(a => a.id_autor === book.id_autor)?.nombre_autor || 'Autor'} {authors.find(a => a.id_autor === book.id_autor)?.apellido_autor || ''}
+                    </p>
+                    {book.genero_libro && (
+                      <span className="badge bg-secondary">{book.genero_libro}</span>
+                    )}
                   </div>
                 </div>
 
@@ -238,13 +286,7 @@ export default function AdminNewBook() {
                   <div className="card-body">
                     <div className="alert alert-info">
                       <i className="fas fa-info-circle me-2"></i>
-                      Completa todos los campos obligatorios (*) para crear el libro.
-                    </div>
-                    <div className="mb-3">
-                      <strong>Estado:</strong> 
-                      <span className={`badge ${book.status === 'published' ? 'bg-success' : book.status === 'draft' ? 'bg-warning' : 'bg-secondary'} ms-2`}>
-                        {book.status === 'published' ? 'Publicado' : book.status === 'draft' ? 'Borrador' : 'Archivado'}
-                      </span>
+                      Los campos marcados con * son obligatorios.
                     </div>
                   </div>
                 </div>

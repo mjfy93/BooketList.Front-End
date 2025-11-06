@@ -1,66 +1,94 @@
 // routes/admin-users.jsx
-import { useState } from 'react'
-import { Link } from 'react-router'
+import { useState, useEffect } from 'react'
+import { Link, Navigate } from 'react-router'
+import { useAdmin } from '../context/AdminContext.jsx'
 
 export default function AdminUsers() {
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: 'Juan Pérez',
-      email: 'juan@email.com',
-      status: 'active',
-      role: 'user',
-      joinDate: '2024-01-15',
-      booksAdded: 12,
-      totalReviews: 8
-    },
-    {
-      id: 2,
-      name: 'María García',
-      email: 'maria@email.com',
-      status: 'blocked',
-      role: 'author',
-      joinDate: '2024-02-20',
-      booksAdded: 45,
-      totalReviews: 23
-    },
-    {
-      id: 3,
-      name: 'Carlos López',
-      email: 'carlos@email.com',
-      status: 'active',
-      role: 'user',
-      joinDate: '2024-03-10',
-      booksAdded: 3,
-      totalReviews: 5
-    }
-  ])
-
+  const { adminFetch, isAdminLoggedIn, adminLogout } = useAdmin()
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
 
-  const toggleUserStatus = (userId) => {
-    setUsers(users.map(user => 
-      user.id === userId 
-        ? { ...user, status: user.status === 'active' ? 'blocked' : 'active' }
-        : user
-    ))
+  // Redirigir si no está logueado
+  if (!isAdminLoggedIn()) {
+    return <Navigate to="/admin/login" replace />
   }
 
-  const deleteUser = (userId) => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
-      setUsers(users.filter(user => user.id !== userId))
+  useEffect(() => {
+    if (isAdminLoggedIn()) {
+      loadUsers()
+    }
+  }, [isAdminLoggedIn])
+
+  const loadUsers = async () => {
+    try {
+      setLoading(true)
+      const response = await adminFetch('/admin/users/all')
+      
+      if (response.ok) {
+        const data = await response.json()
+        setUsers(data)
+      } else {
+        setError('Error al cargar usuarios')
+      }
+    } catch (error) {
+      setError('Error de conexión: ' + error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const toggleUserStatus = async (userId) => {
+    try {
+      const response = await adminFetch(`/admin/users/${userId}/status`, {
+        method: 'PUT'
+      })
+      
+      if (response.ok) {
+        const updatedUser = await response.json()
+        setUsers(users.map(user => 
+          user.id_usuario === userId ? updatedUser.user : user
+        ))
+        alert(updatedUser.message)
+      } else {
+        const errorData = await response.json()
+        alert(errorData.message || 'Error al cambiar estado')
+      }
+    } catch (error) {
+      alert('Error de conexión: ' + error.message)
+    }
+  }
+
+  const handleLogout = () => {
+    if (window.confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+      adminLogout()
     }
   }
 
   const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    user.nombre_usuario?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.apellido_usuario?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email_usuario?.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
+  if (loading) {
+    return (
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-12 d-flex justify-content-center align-items-center min-vh-100">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Cargando...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container-fluid">
       <div className="row">
-        {/* Sidebar Transparente */}
         <div className="col-md-3 col-lg-2 vh-100 position-fixed">
           <div className="p-3">
             <h4 className="text-center mb-4">BooketList Admin</h4>
@@ -77,14 +105,13 @@ export default function AdminUsers() {
               <Link to="/admin/authors" className="nav-link mb-2">
                 <i className="fas fa-pen-fancy me-2"></i>Gestión de Autores
               </Link>
-              <Link to="/" className="nav-link mt-4">
-                <i className="fas fa-sign-out-alt me-2"></i>Volver al Sitio
-              </Link>
+              <button onClick={handleLogout} className="nav-link mt-4 text-start border-0 bg-transparent">
+                <i className="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+              </button>
             </nav>
           </div>
         </div>
 
-        {/* Main Content */}
         <div className="col-md-9 col-lg-10 ms-auto">
           <div className="p-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
@@ -94,7 +121,12 @@ export default function AdminUsers() {
               </Link>
             </div>
 
-            {/* Search Bar */}
+            {error && (
+              <div className="alert alert-danger" role="alert">
+                {error}
+              </div>
+            )}
+
             <div className="card mb-4">
               <div className="card-body">
                 <div className="row">
@@ -102,95 +134,66 @@ export default function AdminUsers() {
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Buscar usuarios por nombre o email..."
+                      placeholder="Buscar usuarios por nombre, apellido o email..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                  </div>
-                  <div className="col-md-6">
-                    <div className="d-flex gap-2 justify-content-end">
-                      <button className="btn btn-outline-primary">
-                        <i className="fas fa-download me-2"></i>Exportar
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Users Table */}
             <div className="card">
               <div className="card-body">
                 <div className="table-responsive">
                   <table className="table table-striped table-hover">
                     <thead>
                       <tr>
+                        <th>ID</th>
                         <th>Usuario</th>
                         <th>Email</th>
-                        <th>Rol</th>
                         <th>Estado</th>
                         <th>Fecha Registro</th>
-                        <th>Libros</th>
-                        <th>Reseñas</th>
                         <th>Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredUsers.map(user => (
-                        <tr key={user.id}>
+                        <tr key={user.id_usuario}>
+                          <td>{user.id_usuario}</td>
                           <td>
                             <div className="d-flex align-items-center">
                               <div className="avatar bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style={{width: '40px', height: '40px'}}>
-                                {user.name.charAt(0)}
+                                {user.nombre_usuario?.charAt(0) || 'U'}
                               </div>
                               <div>
-                                <strong>{user.name}</strong>
-                                <br />
-                                <small className="text-muted">ID: {user.id}</small>
+                                <strong>{user.nombre_usuario} {user.apellido_usuario}</strong>
                               </div>
                             </div>
                           </td>
-                          <td>{user.email}</td>
+                          <td>{user.email_usuario}</td>
                           <td>
-                            <span className={`badge ${user.role === 'author' ? 'bg-info' : 'bg-secondary'}`}>
-                              {user.role === 'author' ? 'Autor' : 'Usuario'}
+                            <span className={`badge ${user.is_active ? 'bg-success' : 'bg-danger'}`}>
+                              {user.is_active ? 'Activo' : 'Bloqueado'}
                             </span>
                           </td>
-                          <td>
-                            <span className={`badge ${user.status === 'active' ? 'bg-success' : 'bg-danger'}`}>
-                              {user.status === 'active' ? 'Activo' : 'Bloqueado'}
-                            </span>
-                          </td>
-                          <td>{user.joinDate}</td>
-                          <td>
-                            <span className="badge bg-primary">{user.booksAdded}</span>
-                          </td>
-                          <td>
-                            <span className="badge bg-success">{user.totalReviews}</span>
-                          </td>
+                          <td>{user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}</td>
                           <td>
                             <div className="d-flex gap-1 flex-nowrap">
+                              <button
+                                className={`btn btn-sm ${user.is_active ? 'btn-warning' : 'btn-success'}`}
+                                onClick={() => toggleUserStatus(user.id_usuario)}
+                                title={user.is_active ? 'Bloquear usuario' : 'Desbloquear usuario'}
+                              >
+                                <i className={`fas ${user.is_active ? 'fa-lock' : 'fa-unlock'}`}></i>
+                              </button>
                               <Link 
-                                to={`/admin/users/${user.id}`}
+                                to={`/admin/users/${user.id_usuario}`}
                                 className="btn btn-sm btn-outline-primary"
-                                title="Ver perfil completo"
+                                title="Ver detalles"
                               >
                                 <i className="fas fa-eye"></i>
                               </Link>
-                              <button
-                                className={`btn btn-sm ${user.status === 'active' ? 'btn-warning' : 'btn-success'}`}
-                                onClick={() => toggleUserStatus(user.id)}
-                                title={user.status === 'active' ? 'Bloquear usuario' : 'Desbloquear usuario'}
-                              >
-                                <i className={`fas ${user.status === 'active' ? 'fa-lock' : 'fa-unlock'}`}></i>
-                              </button>
-                              <button
-                                className="btn btn-sm btn-outline-danger"
-                                onClick={() => deleteUser(user.id)}
-                                title="Eliminar usuario"
-                              >
-                                <i className="fas fa-trash-alt"></i>
-                              </button>
                             </div>
                           </td>
                         </tr>
@@ -201,7 +204,6 @@ export default function AdminUsers() {
               </div>
             </div>
 
-            {/* Stats Summary */}
             <div className="row mt-4">
               <div className="col-md-3">
                 <div className="card bg-primary text-white">
@@ -214,7 +216,7 @@ export default function AdminUsers() {
               <div className="col-md-3">
                 <div className="card bg-success text-white">
                   <div className="card-body text-center">
-                    <h3>{users.filter(u => u.status === 'active').length}</h3>
+                    <h3>{users.filter(u => u.is_active).length}</h3>
                     <p className="mb-0">Usuarios Activos</p>
                   </div>
                 </div>
@@ -222,16 +224,8 @@ export default function AdminUsers() {
               <div className="col-md-3">
                 <div className="card bg-warning text-dark">
                   <div className="card-body text-center">
-                    <h3>{users.filter(u => u.status === 'blocked').length}</h3>
+                    <h3>{users.filter(u => !u.is_active).length}</h3>
                     <p className="mb-0">Usuarios Bloqueados</p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="card bg-info text-white">
-                  <div className="card-body text-center">
-                    <h3>{users.filter(u => u.role === 'author').length}</h3>
-                    <p className="mb-0">Autores</p>
                   </div>
                 </div>
               </div>

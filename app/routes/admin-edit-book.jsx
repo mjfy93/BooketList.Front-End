@@ -1,47 +1,133 @@
 // routes/admin-edit-book.jsx
-import { useState } from 'react'
-import { Link, useParams, useNavigate } from 'react-router'
+import { useState, useEffect } from 'react'
+import { Link, useParams, useNavigate, Navigate } from 'react-router'
+import { useAdmin } from '../context/AdminContext.jsx'
 
 export default function AdminEditBook() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { adminFetch, isAdminLoggedIn, adminLogout } = useAdmin()
   
-  const [book, setBook] = useState({
-    id: parseInt(id),
-    title: 'Cien años de soledad',
-    author: 'Gabriel García Márquez',
-    authorId: 1,
-    genre: 'Ficción',
-    description: 'Una obra maestra del realismo mágico que narra la historia de la familia Buendía en el pueblo ficticio de Macondo.',
-    isbn: '978-8437604947',
-    publishedDate: '1967-05-30',
-    status: 'published',
-    coverImage: 'https://th.bing.com/th/id/OIF.Y2rN6VOb3ioE4J1sqv1huw?w=206&h=206&c=7&r=0&o=7&pid=1.7&rm=3',
-    amazonLink: 'https://www.amazon.com/Cien-a%C3%B1os-soledad-Spanish-Gabriel-Garc%C3%ADa/dp/0307474720',
-    addedBy: 'María García',
-    addedById: 2,
-    reviews: 156,
-    rating: 4.8
-  })
-
-  const handleSave = () => {
-    alert('Libro actualizado correctamente')
-    navigate('/admin/books')
+  // Redirigir si no está logueado
+  if (!isAdminLoggedIn()) {
+    return <Navigate to="api/admin/login" replace />
   }
 
-  const handleCoverChange = (e) => {
-    setBook({...book, coverImage: e.target.value})
+  const [book, setBook] = useState(null)
+  const [authors, setAuthors] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    loadBookAndAuthors()
+  }, [id])
+
+  const loadBookAndAuthors = async () => {
+    try {
+      setLoading(true)
+      
+      // Cargar libro
+      const bookResponse = await adminFetch(`/admin/books/${id}`)
+      if (!bookResponse.ok) {
+        setError('Libro no encontrado')
+        return
+      }
+      const bookData = await bookResponse.json()
+      setBook(bookData)
+
+      // Cargar autores
+      const authorsResponse = await adminFetch('/admin/authors/list')
+      if (authorsResponse.ok) {
+        const authorsData = await authorsResponse.json()
+        setAuthors(authorsData)
+      }
+    } catch (error) {
+      setError('Error de conexión: ' + error.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const handleAmazonLinkChange = (e) => {
-    setBook({...book, amazonLink: e.target.value})
+  const handleSave = async () => {
+    if (!book.titulo_libro || !book.id_autor || !book.genero_libro) {
+      alert('Por favor, completa los campos obligatorios')
+      return
+    }
+
+    setSaving(true)
+    try {
+      const response = await adminFetch(`/admin/books/${id}/update`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          titulo_libro: book.titulo_libro,
+          id_autor: book.id_autor,
+          genero_libro: book.genero_libro,
+          descripcion_libros: book.descripcion_libros,
+          enlace_portada_libro: book.enlace_portada_libro,
+          enlace_asin_libro: book.enlace_asin_libro
+        })
+      })
+
+      if (response.ok) {
+        alert('Libro actualizado correctamente')
+        navigate('/admin/books')
+      } else {
+        const errorData = await response.json()
+        alert(errorData.message || 'Error al actualizar libro')
+      }
+    } catch (error) {
+      alert('Error de conexión: ' + error.message)
+    } finally {
+      setSaving(false)
+    }
   }
+
+  const handleInputChange = (field, value) => {
+    setBook({...book, [field]: value})
+  }
+
+  const handleLogout = () => {
+    if (window.confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+      adminLogout()
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-12 d-flex justify-content-center align-items-center min-vh-100">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Cargando...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!book) {
+    return (
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-12 text-center py-5">
+            <h3>Libro no encontrado</h3>
+            <Link to="/admin/books" className="btn btn-primary mt-3">
+              Volver a Libros
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const currentAuthor = authors.find(a => a.id_autor === book.id_autor)
 
   return (
     <div className="container-fluid">
       <div className="row">
-        {/* Sidebar */}
-         <div className="col-md-3 col-lg-2 vh-100 position-fixed">
+        <div className="col-md-3 col-lg-2 vh-100 position-fixed">
           <div className="p-3">
             <h4 className="text-center mb-4">BooketList Admin</h4>
             <nav className="nav flex-column">
@@ -57,9 +143,9 @@ export default function AdminEditBook() {
               <Link to="/admin/authors" className="nav-link mb-2">
                 <i className="fas fa-pen-fancy me-2"></i>Gestión de Autores
               </Link>
-              <Link to="/" className="nav-link mt-4">
-                <i className="fas fa-sign-out-alt me-2"></i>Volver al Sitio
-              </Link>
+              <button onClick={handleLogout} className="nav-link mt-4 text-start border-0 bg-transparent">
+                <i className="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+              </button>
             </nav>
           </div>
         </div>
@@ -68,16 +154,16 @@ export default function AdminEditBook() {
           <div className="p-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
               <h1>Editar Libro</h1>
-              <div>
-                <Link to={`/admin/books/reviews/${book.id}`} className="btn btn-info me-2">
-                  <i className="fas fa-comments me-2"></i>Ver Reseñas
-                </Link>
-                <Link to="/admin/books" className="btn btn-outline-secondary">
-                  <i className="fas fa-arrow-left me-2"></i>Volver a Libros
-                </Link>
-              </div>
+              <Link to="/admin/books" className="btn btn-outline-secondary">
+                <i className="fas fa-arrow-left me-2"></i>Volver a Libros
+              </Link>
             </div>
 
+            {error && (
+              <div className="alert alert-danger" role="alert">
+                {error}
+              </div>
+            )}
             <div className="row">
               <div className="col-md-8">
                 <div className="card">
@@ -85,34 +171,33 @@ export default function AdminEditBook() {
                     <h5 className="card-title mb-0">Información del Libro</h5>
                   </div>
                   <div className="card-body">
-                    <form>
+                    <form onSubmit={(e) => e.preventDefault()}>
                       <div className="row">
                         <div className="col-md-6 mb-3">
                           <label className="form-label">Título *</label>
                           <input
                             type="text"
                             className="form-control"
-                            value={book.title}
-                            onChange={(e) => setBook({...book, title: e.target.value})}
+                            value={book.titulo_libro}
+                            onChange={(e) => handleInputChange('titulo_libro', e.target.value)}
+                            required
                           />
                         </div>
                         <div className="col-md-6 mb-3">
-                          <label className="form-label">
-                            Autor * 
-                            <Link 
-                              to={`/admin/authors/${book.authorId}`} 
-                              className="btn btn-sm btn-outline-primary ms-2"
-                              title="Ver perfil del autor"
-                            >
-                              <i className="fas fa-external-link-alt"></i>
-                            </Link>
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={book.author}
-                            onChange={(e) => setBook({...book, author: e.target.value})}
-                          />
+                          <label className="form-label">Autor *</label>
+                          <select
+                            className="form-select"
+                            value={book.id_autor}
+                            onChange={(e) => handleInputChange('id_autor', parseInt(e.target.value))}
+                            required
+                          >
+                            <option value="">Seleccionar autor</option>
+                            {authors.map(author => (
+                              <option key={author.id_autor} value={author.id_autor}>
+                                {author.nombre_autor} {author.apellido_autor}
+                              </option>
+                            ))}
+                          </select>
                         </div>
                       </div>
 
@@ -121,8 +206,9 @@ export default function AdminEditBook() {
                           <label className="form-label">Género *</label>
                           <select 
                             className="form-select"
-                            value={book.genre}
-                            onChange={(e) => setBook({...book, genre: e.target.value})}
+                            value={book.genero_libro}
+                            onChange={(e) => handleInputChange('genero_libro', e.target.value)}
+                            required
                           >
                             <option value="Ficción">Ficción</option>
                             <option value="Ciencia Ficción">Ciencia Ficción</option>
@@ -132,65 +218,28 @@ export default function AdminEditBook() {
                             <option value="Biografía">Biografía</option>
                           </select>
                         </div>
-                        <div className="col-md-6 mb-3">
-                          <label className="form-label">ISBN</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={book.isbn}
-                            onChange={(e) => setBook({...book, isbn: e.target.value})}
-                          />
-                        </div>
                       </div>
 
                       <div className="mb-3">
-                        <label className="form-label">Portada del Libro</label>
-                        <div className="row">
-                          <div className="col-md-4">
-                            <img 
-                              src={book.coverImage} 
-                              alt="Portada del libro"
-                              className="img-fluid rounded shadow-sm mb-3"
-                              style={{maxHeight: '200px', objectFit: 'cover'}}
-                            />
-                          </div>
-                          <div className="col-md-8">
-                            <input
-                              type="url"
-                              className="form-control"
-                              placeholder="URL de la portada..."
-                              value={book.coverImage}
-                              onChange={handleCoverChange}
-                            />
-                            <small className="form-text text-muted">
-                              Ingresa la URL de la imagen de portada
-                            </small>
-                          </div>
-                        </div>
+                        <label className="form-label">Portada del Libro (URL)</label>
+                        <input
+                          type="url"
+                          className="form-control"
+                          placeholder="https://ejemplo.com/portada.jpg"
+                          value={book.enlace_portada_libro || ''}
+                          onChange={(e) => handleInputChange('enlace_portada_libro', e.target.value)}
+                        />
                       </div>
 
                       <div className="mb-3">
                         <label className="form-label">Enlace de Amazon</label>
-                        <div className="input-group">
-                          <input
-                            type="url"
-                            className="form-control"
-                            placeholder="https://www.amazon.com/..."
-                            value={book.amazonLink}
-                            onChange={handleAmazonLinkChange}
-                          />
-                          <a 
-                            href={book.amazonLink} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="btn btn-warning"
-                          >
-                            <i className="fab fa-amazon me-2"></i>Ver en Amazon
-                          </a>
-                        </div>
-                        <small className="form-text text-muted">
-                          Enlace directo para comprar el libro en Amazon
-                        </small>
+                        <input
+                          type="url"
+                          className="form-control"
+                          placeholder="https://www.amazon.com/..."
+                          value={book.enlace_asin_libro || ''}
+                          onChange={(e) => handleInputChange('enlace_asin_libro', e.target.value)}
+                        />
                       </div>
 
                       <div className="mb-3">
@@ -198,38 +247,28 @@ export default function AdminEditBook() {
                         <textarea
                           className="form-control"
                           rows="4"
-                          value={book.description}
-                          onChange={(e) => setBook({...book, description: e.target.value})}
+                          value={book.descripcion_libros || ''}
+                          onChange={(e) => handleInputChange('descripcion_libros', e.target.value)}
                         ></textarea>
                       </div>
 
-                      <div className="row">
-                        <div className="col-md-6 mb-3">
-                          <label className="form-label">Fecha de Publicación</label>
-                          <input
-                            type="date"
-                            className="form-control"
-                            value={book.publishedDate}
-                            onChange={(e) => setBook({...book, publishedDate: e.target.value})}
-                          />
-                        </div>
-                        <div className="col-md-6 mb-3">
-                          <label className="form-label">Estado</label>
-                          <select 
-                            className="form-select"
-                            value={book.status}
-                            onChange={(e) => setBook({...book, status: e.target.value})}
-                          >
-                            <option value="published">Publicado</option>
-                            <option value="draft">Borrador</option>
-                            <option value="archived">Archivado</option>
-                          </select>
-                        </div>
-                      </div>
-
                       <div className="d-flex gap-2">
-                        <button type="button" className="btn btn-primary" onClick={handleSave}>
-                          <i className="fas fa-save me-2"></i>Guardar Cambios
+                        <button 
+                          type="button" 
+                          className="btn btn-primary" 
+                          onClick={handleSave}
+                          disabled={saving}
+                        >
+                          {saving ? (
+                            <>
+                              <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                              Guardando...
+                            </>
+                          ) : (
+                            <>
+                              <i className="fas fa-save me-2"></i>Guardar Cambios
+                            </>
+                          )}
                         </button>
                         <Link to="/admin/books" className="btn btn-outline-secondary">
                           Cancelar
@@ -246,82 +285,27 @@ export default function AdminEditBook() {
                     <h5 className="card-title mb-0">Vista Previa</h5>
                   </div>
                   <div className="card-body text-center">
-                    <img 
-                      src={book.coverImage} 
-                      alt="Portada del libro"
-                      className="img-fluid rounded shadow mb-3"
-                      style={{maxHeight: '250px', objectFit: 'cover'}}
-                    />
-                    <h5>{book.title}</h5>
-                    <p className="text-muted">{book.author}</p>
-                    <span className="badge bg-secondary">{book.genre}</span>
-                  </div>
-                </div>
-
-                <div className="card mt-4">
-                  <div className="card-header">
-                    <h5 className="card-title mb-0">Enlaces Rápidos</h5>
-                  </div>
-                  <div className="card-body">
-                    <div className="d-grid gap-2">
-                      <Link 
-                        to={`/admin/books/reviews/${book.id}`}
-                        className="btn btn-outline-info btn-sm"
-                      >
-                        <i className="fas fa-comments me-2"></i>Ver Reseñas ({book.reviews})
-                      </Link>
-                      <Link 
-                        to={`/admin/authors/${book.authorId}`}
-                        className="btn btn-outline-primary btn-sm"
-                      >
-                        <i className="fas fa-user-edit me-2"></i>Perfil del Autor
-                      </Link>
-                      <Link 
-                        to={`/admin/users/${book.addedById}`}
-                        className="btn btn-outline-secondary btn-sm"
-                      >
-                        <i className="fas fa-user me-2"></i>Ver Usuario: {book.addedBy}
-                      </Link>
-                      <a 
-                        href={book.amazonLink} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="btn btn-outline-warning btn-sm"
-                      >
-                        <i className="fab fa-amazon me-2"></i>Amazon
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="card mt-4">
-                  <div className="card-header">
-                    <h5 className="card-title mb-0">Estadísticas</h5>
-                  </div>
-                  <div className="card-body">
-                    <div className="mb-3">
-                      <strong>Reseñas:</strong> {book.reviews}
-                    </div>
-                    <div className="mb-3">
-                      <strong>Calificación Promedio:</strong> 
-                      <span className="text-warning ms-2">
-                        {'★'.repeat(Math.floor(book.rating))}
-                        {'☆'.repeat(5-Math.floor(book.rating))}
-                      </span>
-                      <span className="text-muted ms-1">({book.rating})</span>
-                    </div>
-                    <div className="mb-3">
-                      <strong>Última Actualización:</strong> 2024-01-20
-                    </div>
-                    <div className="mb-3">
-                      <strong>Agregado por:</strong> 
-                      <Link 
-                        to={`/admin/users/${book.addedById}`}
-                        className="ms-1"
-                      >
-                        {book.addedBy}
-                      </Link>
-                    </div>
+                    {book.enlace_portada_libro ? (
+                      <img 
+                        src={book.enlace_portada_libro} 
+                        alt="Portada del libro"
+                        className="rounded mb-3"
+                        style={{width: '150px', height: '200px', objectFit: 'cover'}}
+                        onError={(e) => {
+                          e.target.style.display = 'none'
+                        }}
+                      />
+                    ) : (
+                      <div className="bg-light rounded d-flex align-items-center justify-content-center mb-3" 
+                           style={{width: '150px', height: '200px', margin: '0 auto'}}>
+                        <i className="fas fa-book fa-3x text-muted"></i>
+                      </div>
+                    )}
+                    <h5>{book.titulo_libro}</h5>
+                    <p className="text-muted">
+                      {currentAuthor ? `${currentAuthor.nombre_autor} ${currentAuthor.apellido_autor}` : 'Autor no encontrado'}
+                    </p>
+                    <span className="badge bg-secondary">{book.genero_libro}</span>
                   </div>
                 </div>
               </div>

@@ -22,7 +22,7 @@ export default function Home() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      authFetch(`${API_BASE_URL}/api/user`)
+      authFetch(`${API_BASE_URL}/api/my-library`)
         .then(response => {
           if (response.ok) {
             return response.json();

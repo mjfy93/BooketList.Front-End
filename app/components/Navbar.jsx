@@ -1,4 +1,4 @@
-import { Link } from 'react-router'
+import { Link, NavLink } from 'react-router'
 import { faLightbulb, faBook } from '../utils/faIcons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useTheme } from '../context/ThemeContext'
@@ -8,15 +8,14 @@ import { useState, useEffect } from "react";
 import { API_BASE_URL } from "../utils/api";
 
 export async function loader() {
-  const response = await fetch('${API_BASE_URL}/api/books');
+  const response = await fetch(`${API_BASE_URL}/api/books`);
   return response.json();
 }
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme()
   const { user, isAuthenticated, logout, authFetch } = useAuth();
-  const { admin, isAdminLogin, adminLogout, adminFetch} = useAdmin();
-
+  const { admin, isAdminLogin, adminLogout, adminFetch } = useAdmin();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,28 +32,27 @@ export default function Navbar() {
           throw new Error('Error fetching biblioteca');
         })
         .then(data => {
-          // Fixed: Access the books array from the data object
           if (data && data.books) {
             setCurrentReadings(data.books.slice(0, 4));
           }
         })
         .catch(err => console.error('Error fetching biblioteca:', err));
     }
-    else if (isAdminLogin){
+    else if (isAdminLogin) {
       adminFetch(`${API_BASE_URL}/api/admin/profile`)
-      .then(response => {
+        .then(response => {
           if (response.ok) {
             return response.json();
           }
           throw new Error('Error fetching biblioteca');
         })
         .then(data => {
-          // Fixed: Access the books array from the data object
           if (data && data.books) {
             setCurrentReadings(data.books.slice(0, 4));
           }
         })
-        .catch(err => console.error('Error fetching biblioteca:', err));}
+        .catch(err => console.error('Error fetching biblioteca:', err));
+    }
   }, [isAuthenticated, authFetch]);
 
   const handleLogout = () => {
@@ -70,19 +68,40 @@ export default function Navbar() {
               BooketList
             </a>
             <li className='nav-item me-auto p-2'>
-              <Link to='/libros' className='nav-link'>
+              <NavLink
+                to='/libros'
+                className='nav-link'
+                style={({ isActive }) => ({
+                  color: isActive ? '#ffc107' : 'inherit',
+                  fontWeight: isActive ? 'bold' : 'normal'
+                })}
+              >
                 Todos los Libros
-              </Link>
+              </NavLink>
             </li>
             <li className='nav-item p-2'>
-              <Link to='/generosTodos' className='nav-link'>
+              <NavLink
+                to='/generosTodos'
+                className='nav-link'
+                style={({ isActive }) => ({
+                  color: isActive ? '#ffc107' : 'inherit',
+                  fontWeight: isActive ? 'bold' : 'normal'
+                })}
+              >
                 Géneros
-              </Link>
+              </NavLink>
             </li>
             <li className='nav-item p-2'>
-              <Link to='/autores' className='nav-link'>
+              <NavLink
+                to='/autores'
+                className='nav-link'
+                style={({ isActive }) => ({
+                  color: isActive ? '#ffc107' : 'inherit',
+                  fontWeight: isActive ? 'bold' : 'normal'
+                })}
+              >
                 Autores
-              </Link>
+              </NavLink>
             </li>
             <li className='nav-item p-2'>
               <div className="dropdown">
@@ -123,19 +142,40 @@ export default function Navbar() {
             BooketList
           </a>
           <li className='nav-item me-auto p-2'>
-            <Link to='/libros' className='nav-link'>
+            <NavLink
+              to='/libros'
+              className='nav-link'
+              style={({ isActive }) => ({
+                color: isActive ? '#ffc107' : 'inherit',
+                fontWeight: isActive ? 'bold' : 'normal'
+              })}
+            >
               Todos los Libros
-            </Link>
+            </NavLink>
           </li>
           <li className='nav-item p-2'>
-            <Link to='/generosTodos' className='nav-link'>
+            <NavLink
+              to='/generosTodos'
+              className='nav-link'
+              style={({ isActive }) => ({
+                color: isActive ? '#ffc107' : 'inherit',
+                fontWeight: isActive ? 'bold' : 'normal'
+              })}
+            >
               Géneros
-            </Link>
+            </NavLink>
           </li>
           <li className='nav-item p-2'>
-            <Link to='/autores' className='nav-link'>
+            <NavLink
+              to='/autores'
+              className='nav-link'
+              style={({ isActive }) => ({
+                color: isActive ? '#ffc107' : 'inherit',
+                fontWeight: isActive ? 'bold' : 'normal'
+              })}
+            >
               Autores
-            </Link>
+            </NavLink>
           </li>
           <li className='nav-item p-2'>
             <div className="dropdown">

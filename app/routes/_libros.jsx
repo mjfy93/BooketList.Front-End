@@ -19,7 +19,9 @@ export default function Libros() {
 
     console.log(data);
 
-
+    const sortedData = [...data].sort((a, b) =>
+        a.titulo_libro.localeCompare(b.titulo_libro)
+    );
 
 
     return (
@@ -29,7 +31,7 @@ export default function Libros() {
 
             <div className="container text-center" >
                 <div className="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-2">
-                    {data.map((item) => (
+                    {sortedData.map((item) => (
                         <div className="col" key={item.id_libros}>
                             <div className="card h-100 ">
                                 <img src={item.enlace_portada_libro}
@@ -39,21 +41,18 @@ export default function Libros() {
                                 <div className="card-body d-flex flex-column">
                                     <h5 className="card-title">{item.titulo_libro} </h5>
                                     <p className="card-text">{item.autor.nombre_autor} {item.autor.apellido_autor}</p>
-                                    <button className="btn btn-light mt-auto">
-                                        <Link to={`/detalle/${item.id_libros}`}
-                                            className="link-dark link-underline link-underline-opacity-0">
-                                            Más información
-                                        </Link>
-                                    </button>
+                                    <Link to={`/detalle/${item.id_libros}`}
 
-
+                                        className="link-dark link-underline link-underline-opacity-0 btn btn-light mt-auto">
+                                        Más información
+                                    </Link>
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
-            <a href="#top">Back to Top</a>
+            <a href="#top" className="text-light">Volver al inicio</a>
         </div>
     )
 }

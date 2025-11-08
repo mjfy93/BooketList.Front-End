@@ -1,9 +1,20 @@
 // app/root.jsx
-import { Outlet } from 'react-router'
+import { Outlet, useLocation } from 'react-router'
+import { useEffect } from 'react'
 import HtmlShell from './components/HtmlShell.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { AdminProvider } from './context/AdminContext.jsx'
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
 
 export default function App() {
   return (
@@ -12,6 +23,7 @@ export default function App() {
         <AdminProvider>
           <HtmlShell>
             <main className='container mb-5'>
+              <ScrollToTop />
               <Outlet />
             </main>
           </HtmlShell>
@@ -23,7 +35,6 @@ export default function App() {
 
 export function ErrorBoundary({ error }) {
   console.error('Error caught by boundary:', error);
-
   return (
     <ThemeProvider>
       <AuthProvider>

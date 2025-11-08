@@ -31,7 +31,7 @@ export default function Autores() {
     const letters = Object.keys(authorsByLetter).sort();
 
     return (
-        <div className="container my-4">
+        <div className="container my-4" id="top">
             <h1>Autores</h1>
             <h3>Descubre todos los autores en nuestro catálogo y todas sus obras.</h3>
 
@@ -48,7 +48,7 @@ export default function Autores() {
                 ))}
             </div>
 
-           
+
             {letters.map(letter => (
                 <div key={letter} id={`letter-${letter}`} className="mb-5">
                     <h2 className="border-bottom pb-2">{letter}</h2>
@@ -78,6 +78,7 @@ export default function Autores() {
                             </div>
                         ))}
                     </div>
+                    <a href="#top" style={{ color: "white" }}>Volver al inicio</a>
                 </div>
             ))}
         </div>

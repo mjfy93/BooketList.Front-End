@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    const login = async (email_usuario, password_usuario) => {
+    const login = async (email, password) => {
         try {
             const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
                 method: 'POST',
@@ -63,8 +63,8 @@ export const AuthProvider = ({ children }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    email_usuario: email_usuario,
-                    password_usuario: password_usuario
+                    email_usuario: email,
+                    password_usuario: password
                 })
             });
 
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
             const userData = {
                 id: data.user.id_usuario,
                 token: data.access_token,
-                username: data.user.email_usuario,
+                username: data.user.nombre_usuario,
                 nombre_usuario: data.user.nombre_usuario,
                 apellido_usuario: data.user.apellido_usuario
             };
@@ -87,7 +87,7 @@ export const AuthProvider = ({ children }) => {
             if (typeof window !== 'undefined') {
                 localStorage.setItem('token', data.access_token);
                 localStorage.setItem('user_id', data.user.id_usuario);
-                localStorage.setItem('username', data.user.email_usuario);
+                localStorage.setItem('username', data.user.nombre_usuario);
                 localStorage.setItem('nombre_usuario', data.user.nombre_usuario);
                 localStorage.setItem('apellido_usuario', data.user.apellido_usuario);
             }
@@ -124,7 +124,7 @@ export const AuthProvider = ({ children }) => {
             const userData = {
                 id: data.user.id_usuario,
                 token: data.access_token,
-                username: data.user.email_usuario,
+                username: data.user.nombre_usuario,
                 nombre_usuario: data.user.nombre_usuario,
                 apellido_usuario: data.user.apellido_usuario
             };
@@ -134,7 +134,7 @@ export const AuthProvider = ({ children }) => {
             if (typeof window !== 'undefined') {
                 localStorage.setItem('token', data.access_token);
                 localStorage.setItem('user_id', data.user.id_usuario);
-                localStorage.setItem('username', data.user.email_usuario);
+                localStorage.setItem('username', data.user.nombre_usuario);
                 localStorage.setItem('nombre_usuario', data.user.nombre_usuario);
                 localStorage.setItem('apellido_usuario', data.user.apellido_usuario);
             }
@@ -159,7 +159,6 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Changed from function to boolean value
     const isAuthenticated = !!user && !!user.token;
 
     const authFetch = async (url, options = {}) => {

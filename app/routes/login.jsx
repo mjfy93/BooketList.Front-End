@@ -22,25 +22,25 @@ const Login = () => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setLoading(true);
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
-        try {
-            const result = await login(formData.email, formData.password);
+    try {
+        const result = await login(formData.email, formData.password);
 
-            if (result.success) {
-                navigate('/');
-            } else {
-                setError(result.error || 'Error en el inicio de sesión');
-            }
-        } catch (err) {
-            console.error('Error de login:', err);
-            setError('Error de conexión con el servidor');
-        } finally {
-            setLoading(false);
+        if (result.success) {
+            navigate('/');
+        } else {
+            setError(result.error || 'Error en el inicio de sesión');
         }
-    };
+    } catch (err) {
+        console.error('Error de login:', err);
+        setError('Error de conexión con el servidor');
+    } finally {
+        setLoading(false);
+    }
+};
 
     return (
         <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center 

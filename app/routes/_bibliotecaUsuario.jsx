@@ -122,11 +122,11 @@ export default function BibliotecaUsuario() {
                             {allBooks.map(item => (
                                 <div key={item.library_id} className="col-md-3 mb-4">
                                     <div className="card h-100">
-                                        <img src={item.book.enlace_portada_libro || 'https://placehold.co/300x450'}
-                                            className="card-img-top" alt={item.book.titulo_libro}
+                                        <img src={item.book.cover_url || 'https://placehold.co/300x450'}
+                                            className="card-img-top" alt={item.book.titulo}
                                             style={{ height: '300px', objectFit: 'cover' }} />
                                         <div className="card-body">
-                                            <h6 className="card-title">{item.book.titulo_libro}</h6>
+                                            <h6 className="card-title">{item.book.titulo}</h6>
                                             <p className="card-text text-muted small">{item.book.autor}</p>
                                             <span className={`badge ${item.reading_state === 'leido' ? 'bg-success' :
                                                 item.reading_state === 'leyendo' ? 'bg-warning' : 'bg-info'
@@ -136,7 +136,7 @@ export default function BibliotecaUsuario() {
                                             </span>
                                         </div>
                                         <div className="card-footer">
-                                            <Link to={`/libros/${item.book.id_libros}`}
+                                            <Link to={`/libros/${item.book.id_libro}`}
                                                 className="btn btn-sm btn-light w-100">
                                                 Ver Detalles
                                             </Link>
@@ -168,11 +168,12 @@ export default function BibliotecaUsuario() {
                                         <div className="row mt-2">
                                             {authorBooks.map(item => (
                                                 <div key={item.library_id} className="col-md-2 mb-2">
-                                                    <Link to={`/libros/${item.book.id_libros}`}>
-                                                        <img src={item.book.enlace_portada_libro}
+                                                    <Link to={`/libros/${item.book.id_libro}`}>
+                                                        <img src={item.book.cover_url || 'https://placehold.co/150x225'}
                                                             className="img-fluid rounded"
-                                                            alt={item.book.titulo_libro}
-                                                            title={item.book.titulo_libro} />
+                                                            alt={item.book.titulo}
+                                                            title={item.book.titulo} 
+                                                            style={{ height: '150px', objectFit: 'cover' }}/>
                                                     </Link>
                                                 </div>
                                             ))}
@@ -194,15 +195,15 @@ export default function BibliotecaUsuario() {
                             {readingBooks.map(item => (
                                 <div key={item.library_id} className="col-md-3 mb-4">
                                     <div className="card h-100">
-                                        <img src={item.book.enlace_portada_libro}
-                                            className="card-img-top" alt={item.book.titulo_libro}
+                                        <img src={item.book.cover_url || 'https://placehold.co/300x450'}
+                                            className="card-img-top" alt={item.book.titulo}
                                             style={{ height: '300px', objectFit: 'cover' }} />
                                         <div className="card-body">
-                                            <h6 className="card-title">{item.book.titulo_libro}</h6>
+                                            <h6 className="card-title">{item.book.titulo}</h6>
                                             <p className="card-text text-muted small">{item.book.autor}</p>
                                         </div>
                                         <div className="card-footer">
-                                            <Link to={`/libros/${item.book.id_libros}`}
+                                            <Link to={`/libros/${item.book.id_libro}`}
                                                 className="btn btn-sm btn-light w-100">
                                                 Ver Detalles
                                             </Link>
@@ -224,15 +225,15 @@ export default function BibliotecaUsuario() {
                             {readBooks.map(item => (
                                 <div key={item.library_id} className="col-md-3 mb-4">
                                     <div className="card h-100">
-                                        <img src={item.book.enlace_portada_libro}
-                                            className="card-img-top" alt={item.book.titulo_libro}
+                                        <img src={item.book.cover_url || 'https://placehold.co/300x450'}
+                                            className="card-img-top" alt={item.book.titulo}
                                             style={{ height: '300px', objectFit: 'cover' }} />
                                         <div className="card-body">
-                                            <h6 className="card-title">{item.book.titulo_libro}</h6>
+                                            <h6 className="card-title">{item.book.titulo}</h6>
                                             <p className="card-text text-muted small">{item.book.autor}</p>
                                         </div>
                                         <div className="card-footer">
-                                            <Link to={`/libros/${item.book.id_libros}`}
+                                            <Link to={`/libros/${item.book.id_libro}`}
                                                 className="btn btn-sm btn-light w-100">
                                                 Ver Detalles
                                             </Link>
@@ -254,15 +255,15 @@ export default function BibliotecaUsuario() {
                             {toReadBooks.map(item => (
                                 <div key={item.library_id} className="col-md-3 mb-4">
                                     <div className="card h-100">
-                                        <img src={item.book.enlace_portada_libro}
-                                            className="card-img-top" alt={item.book.titulo_libro}
+                                        <img src={item.book.cover_url || 'https://placehold.co/300x450'}
+                                            className="card-img-top" alt={item.book.titulo}
                                             style={{ height: '300px', objectFit: 'cover' }} />
                                         <div className="card-body">
-                                            <h6 className="card-title">{item.book.titulo_libro}</h6>
+                                            <h6 className="card-title">{item.book.titulo}</h6>
                                             <p className="card-text text-muted small">{item.book.autor}</p>
                                         </div>
                                         <div className="card-footer">
-                                            <Link to={`/libros/${item.book.id_libros}`}
+                                            <Link to={`/libros/${item.book.id_libro}`}
                                                 className="btn btn-sm btn-light w-100">
                                                 Ver Detalles
                                             </Link>

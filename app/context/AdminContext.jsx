@@ -48,7 +48,7 @@ export function AdminProvider({ children }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          "Access-Control-Allow-Origin": "https://front-end-seven-swart.vercel.app/admin/login"
+          
         },
         body: JSON.stringify({
           email_admin: email,

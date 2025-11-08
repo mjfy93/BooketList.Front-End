@@ -22,7 +22,7 @@ export default function Home() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      authFetch(`${API_BASE_URL}/api/my-library`)
+      authFetch(`${API_BASE_URL}/api/user`)
         .then(response => {
           if (response.ok) {
             return response.json();
@@ -118,6 +118,9 @@ export default function Home() {
 
             <p className="mt-2">
               ¿No tienes una cuenta? <Link to="/register">Crea una cuenta.</Link>
+            </p>
+            <p className="mt-2">
+              <Link to="/admin">Ingresa como Administrador.</Link>
             </p>
           </form>
         </div>

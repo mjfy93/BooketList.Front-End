@@ -26,15 +26,19 @@ export function ErrorBoundary({ error }) {
 
   return (
     <ThemeProvider>
-      <HtmlShell>
-        <main className='container mb-5'>
-          <div className="alert alert-danger">
-            <h2>Error</h2>
-            <p>{error?.message || 'Algo salió mal'}</p>
-            <pre>{error?.stack}</pre>
-          </div>
-        </main>
-      </HtmlShell>
+      <AuthProvider>
+        <AdminProvider>
+          <HtmlShell>
+            <main className='container mb-5'>
+              <div className="alert alert-danger">
+                <h2>Error</h2>
+                <p>{error?.message || 'Algo salió mal'}</p>
+                <pre>{error?.stack}</pre>
+              </div>
+            </main>
+          </HtmlShell>
+        </AdminProvider>
+      </AuthProvider>
     </ThemeProvider>
   )
 }

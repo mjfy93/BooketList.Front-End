@@ -4,7 +4,7 @@ export default [
     { path: '/autores', file: 'routes/_autores.jsx' },
     { path: '/autores/:authorId', file: 'routes/autor.$authorId.jsx' },
     { path: '/generosTodos', file: 'routes/_generosTodos.jsx' },
-    { path: '/generosTodos/:slug', file: 'routes/genero.$slug.jsx' },
+    { path: '/genero/:slug', file: 'routes/genero.$slug.jsx' },
     { path: '/detalle/:bookId', file: 'routes/detalle.$bookId.jsx' },
     { path: '/login', file: 'routes/login.jsx' },
     { path: '/register', file: 'routes/register.jsx' },
@@ -19,9 +19,11 @@ export default [
     { path: '/admin/books/new', file: 'routes/admin-new-book.jsx' },
     { path: '/admin/authors/new', file: 'routes/admin-new-author.jsx' },
     { path: '/admin/books/edit/:id', file: 'routes/admin-edit-book.jsx' },
+    { path: '/admin/authors/:id/edit', file: 'routes/admin-edit-author.jsx' },
     { path: '/admin/authors/:id', file: 'routes/admin-author-detail.jsx' },
     { path: '/admin/users/:id', file: 'routes/admin-user-detail.jsx' },
     { path: '/admin/authors/:id/books', file: 'routes/admin-author-books.jsx' },
+    
 
    
 ]

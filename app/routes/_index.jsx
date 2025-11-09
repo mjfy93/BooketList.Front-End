@@ -8,8 +8,6 @@ export async function loader() {
   return response.json();
 }
 
-
-
 export default function Home() {
   const data = useLoaderData();
   const { user, isAuthenticated, login, logout, authFetch, loading } = useAuth();
@@ -18,7 +16,6 @@ export default function Home() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [currentReadings, setCurrentReadings] = useState([]);
-
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -41,7 +38,12 @@ export default function Home() {
     const result = await login(email, password);
 
     if (!result.success) {
-      setError(result.error);
+      // Mostrar mensaje específico para cuenta bloqueada
+      if (result.error && result.error.includes('bloqueada')) {
+        setError(result.error);
+      } else {
+        setError(result.error || 'Credenciales inválidas');
+      }
     } else {
       setEmail('');
       setPassword('');
@@ -52,7 +54,6 @@ export default function Home() {
     logout();
   };
 
-
   if (loading) {
     return (
       <div className="text-center my-5">
@@ -62,7 +63,6 @@ export default function Home() {
       </div>
     );
   }
-
 
   if (!isAuthenticated) {
     return (
@@ -80,7 +80,18 @@ export default function Home() {
 
             {error && (
               <div className="alert alert-danger" role="alert">
-                Credenciales incorrectas. Inténtalo de nuevo.
+                <strong>Error:</strong> {error}
+                {/* Mostrar información de contacto si la cuenta está bloqueada */}
+                {error.includes('bloqueada') && (
+                  <div className="mt-2">
+                    <small>
+                      Si crees que esto es un error, contacta a: 
+                      <a href="mailto:soporte@booketlist.com" className="text-danger ms-1">
+                        soporte@booketlist.com
+                      </a>
+                    </small>
+                  </div>
+                )}
               </div>
             )}
 
@@ -127,7 +138,6 @@ export default function Home() {
       </div>
     );
   }
-
 
   return (
     <div className="homeContainer text-start my-5 px-4">

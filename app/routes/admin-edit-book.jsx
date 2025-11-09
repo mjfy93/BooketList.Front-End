@@ -1,13 +1,16 @@
 // routes/admin-edit-book.jsx
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate, Navigate } from 'react-router'
-import { useAdmin } from '../context/AdminContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx' // CAMBIADO
 import LoadingSpinner from '../components/LoadingSpinner.jsx'
 
 export default function AdminEditBook() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { adminFetch, isAdminLoggedIn, adminLogout, loading: authLoading, isInitialized } = useAdmin()
+  // CAMBIADO: useAdmin -> useAuth
+  const { adminFetch, isAdminLoggedIn, adminLogout, loading: authLoading, isInitialized } = useAuth()
+  
+  // Resto del código igual...
   const [book, setBook] = useState(null)
   const [authors, setAuthors] = useState([])
   const [loading, setLoading] = useState(true)

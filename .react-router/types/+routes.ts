@@ -44,7 +44,7 @@ type Pages = {
   "/register": {
     params: {};
   };
-  "/:bookId/resena": {
+  "/libros/:bookId/resena": {
     params: {
       "bookId": string;
     };
@@ -101,7 +101,7 @@ type Pages = {
 type RouteFiles = {
   "root.jsx": {
     id: "root";
-    page: "/" | "/libros" | "/autores" | "/autores/:authorId" | "/generosTodos" | "/generosTodos/:slug" | "/detalle/:bookId" | "/login" | "/register" | "/:bookId/resena" | "/biblioteca" | "/profile" | "/admin/login" | "/admin" | "/admin/users" | "/admin/books" | "/admin/authors" | "/admin/books/new" | "/admin/authors/new" | "/admin/books/edit/:id" | "/admin/authors/:id" | "/admin/users/:id" | "/admin/authors/:id/books";
+    page: "/" | "/libros" | "/autores" | "/autores/:authorId" | "/generosTodos" | "/generosTodos/:slug" | "/detalle/:bookId" | "/login" | "/register" | "/libros/:bookId/resena" | "/biblioteca" | "/profile" | "/admin/login" | "/admin" | "/admin/users" | "/admin/books" | "/admin/authors" | "/admin/books/new" | "/admin/authors/new" | "/admin/books/edit/:id" | "/admin/authors/:id" | "/admin/users/:id" | "/admin/authors/:id/books";
   };
   "routes/_index.jsx": {
     id: "routes/_index";
@@ -141,7 +141,7 @@ type RouteFiles = {
   };
   "routes/$bookId.resena.jsx": {
     id: "routes/$bookId.resena";
-    page: "/:bookId/resena";
+    page: "/libros/:bookId/resena";
   };
   "routes/_bibliotecaUsuario.jsx": {
     id: "routes/_bibliotecaUsuario";

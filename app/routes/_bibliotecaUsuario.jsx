@@ -30,6 +30,7 @@ export default function BibliotecaUsuario() {
                 }
 
                 const data = await response.json();
+                console.log('Library data received:', data); // Debug log
                 setLibraryData(data);
             } catch (err) {
                 console.error('Error fetching library:', err);
@@ -64,14 +65,56 @@ export default function BibliotecaUsuario() {
         );
     }
 
-    // Separate books by reading state
-    const allBooks = libraryData?.books || [];
-    const readingBooks = allBooks.filter(item => item.reading_state === 'leyendo');
-    const readBooks = allBooks.filter(item => item.reading_state === 'leido');
-    const toReadBooks = allBooks.filter(item => item.reading_state === 'quiero_leer');
+    // FIXED: Combine books from all three arrays with consistent structure
+    const combineBooksWithState = (booksArray, state) => {
+        return booksArray.map(item => ({
+            ...item,
+            reading_state: state,
+            // Ensure consistent book structure
+            book: {
+                ...item.book,
+                // Create author string from object if needed
+                autor: item.book.autor
+                    ? (typeof item.book.autor === 'object'
+                        ? `${item.book.autor.nombre_autor} ${item.book.autor.apellido_autor}`
+                        : item.book.autor)
+                    : 'Autor desconocido'
+            }
+        }));
+    };
 
-    // Get unique authors
-    const authors = [...new Set(allBooks.map(item => item.book.autor))].sort();
+    const quieroLeerBooks = combineBooksWithState(libraryData?.quiero_leer || [], 'quiero_leer');
+    const leyendoBooks = combineBooksWithState(libraryData?.leyendo || [], 'leyendo');
+    const leidoBooks = combineBooksWithState(libraryData?.leido || [], 'leido');
+
+    // Combine all books for "Todos los Libros" tab
+    const allBooks = [...quieroLeerBooks, ...leyendoBooks, ...leidoBooks];
+
+    // FIXED: Get unique authors from the combined books
+    const authors = [...new Set(allBooks
+        .map(item => item.book.autor)
+        .filter(autor => autor && autor !== 'Autor desconocido')
+    )].sort();
+
+    // Helper function to get display text for reading state
+    const getReadingStateText = (state) => {
+        switch (state) {
+            case 'leido': return 'Leído';
+            case 'leyendo': return 'Leyendo';
+            case 'quiero_leer': return 'Por Leer';
+            default: return state;
+        }
+    };
+
+    // Helper function to get badge class for reading state
+    const getReadingStateBadgeClass = (state) => {
+        switch (state) {
+            case 'leido': return 'bg-success';
+            case 'leyendo': return 'bg-warning';
+            case 'quiero_leer': return 'bg-info';
+            default: return 'bg-secondary';
+        }
+    };
 
     return (
         <div className="bibliotecaUsuarioContainer">
@@ -94,21 +137,21 @@ export default function BibliotecaUsuario() {
                     <button className="nav-link" id="leyendo-tab" data-bs-toggle="tab"
                         data-bs-target="#leyendo-pane" type="button" role="tab"
                         aria-controls="leyendo-pane" aria-selected="false">
-                        Leyendo ({readingBooks.length})
+                        Leyendo ({leyendoBooks.length})
                     </button>
                 </li>
                 <li className="nav-item" role="presentation">
                     <button className="nav-link" id="leido-tab" data-bs-toggle="tab"
                         data-bs-target="#leido-pane" type="button" role="tab"
                         aria-controls="leido-pane" aria-selected="false">
-                        Leídos ({readBooks.length})
+                        Leídos ({leidoBooks.length})
                     </button>
                 </li>
                 <li className="nav-item" role="presentation">
                     <button className="nav-link" id="porLeer-tab" data-bs-toggle="tab"
                         data-bs-target="#porLeer-pane" type="button" role="tab"
                         aria-controls="porLeer-pane" aria-selected="false">
-                        Por Leer ({toReadBooks.length})
+                        Por Leer ({quieroLeerBooks.length})
                     </button>
                 </li>
             </ul>
@@ -120,7 +163,7 @@ export default function BibliotecaUsuario() {
                     {allBooks.length > 0 ? (
                         <div className="row">
                             {allBooks.map(item => (
-                                <div key={item.library_id} className="col-md-3 mb-4">
+                                <div key={item.library_id || item.rating_id} className="col-md-3 mb-4">
                                     <div className="card h-100">
                                         <img src={item.book.cover_url || 'https://placehold.co/300x450'}
                                             className="card-img-top" alt={item.book.titulo}
@@ -128,15 +171,22 @@ export default function BibliotecaUsuario() {
                                         <div className="card-body">
                                             <h6 className="card-title">{item.book.titulo}</h6>
                                             <p className="card-text text-muted small">{item.book.autor}</p>
-                                            <span className={`badge ${item.reading_state === 'leido' ? 'bg-success' :
-                                                item.reading_state === 'leyendo' ? 'bg-warning' : 'bg-info'
-                                                }`}>
-                                                {item.reading_state === 'leido' ? 'Leído' :
-                                                    item.reading_state === 'leyendo' ? 'Leyendo' : 'Por Leer'}
+                                            <span className={`badge ${getReadingStateBadgeClass(item.reading_state)}`}>
+                                                {getReadingStateText(item.reading_state)}
                                             </span>
+                                            {/* Show rating for read books */}
+                                            {item.reading_state === 'leido' && item.calificacion && (
+                                                <div className="mt-2">
+                                                    <small className="text-warning">
+                                                        {'★'.repeat(item.calificacion)}
+                                                        {'☆'.repeat(5 - item.calificacion)}
+                                                        <span className="text-muted ms-1">({item.calificacion}/5)</span>
+                                                    </small>
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="card-footer">
-                                            <Link to={`/libros/${item.book.id_libro}`}
+                                            <Link to={`/detalle/${item.book.id_libros}`}
                                                 className="btn btn-sm btn-light w-100">
                                                 Ver Detalles
                                             </Link>
@@ -161,19 +211,19 @@ export default function BibliotecaUsuario() {
                                     <div key={author} className="list-group-item">
                                         <div className="d-flex justify-content-between align-items-center">
                                             <h5 className="mb-1">{author}</h5>
-                                            <span className="badge bg-light rounded-pill">
+                                            <span className="badge bg-light rounded-pill text-dark">
                                                 {authorBooks.length} libro{authorBooks.length !== 1 ? 's' : ''}
                                             </span>
                                         </div>
                                         <div className="row mt-2">
                                             {authorBooks.map(item => (
-                                                <div key={item.library_id} className="col-md-2 mb-2">
-                                                    <Link to={`/libros/${item.book.id_libro}`}>
-                                                        <img src={item.book.cover_url || 'https://placehold.co/150x225'}
+                                                <div key={item.library_id || item.rating_id} className="col-md-2 mb-2">
+                                                    <Link to={`/detalle/${item.book.id_libros}`}>
+                                                        <img src={item.book.enlace_portada_libro || 'https://placehold.co/100x150'}
                                                             className="img-fluid rounded"
-                                                            alt={item.book.titulo}
-                                                            title={item.book.titulo} 
-                                                            style={{ height: '150px', objectFit: 'cover' }}/>
+                                                            alt={item.book.titulo_libro}
+                                                            title={item.book.titulo_libro}
+                                                            style={{ height: '150px', objectFit: 'cover' }} />
                                                     </Link>
                                                 </div>
                                             ))}
@@ -190,20 +240,20 @@ export default function BibliotecaUsuario() {
                 {/* Leyendo */}
                 <div className="tab-pane fade" id="leyendo-pane" role="tabpanel"
                     aria-labelledby="leyendo-tab">
-                    {readingBooks.length > 0 ? (
+                    {leyendoBooks.length > 0 ? (
                         <div className="row">
-                            {readingBooks.map(item => (
+                            {leyendoBooks.map(item => (
                                 <div key={item.library_id} className="col-md-3 mb-4">
                                     <div className="card h-100">
-                                        <img src={item.book.cover_url || 'https://placehold.co/300x450'}
-                                            className="card-img-top" alt={item.book.titulo}
+                                        <img src={item.book.enlace_portada_libro || 'https://placehold.co/300x450'}
+                                            className="card-img-top" alt={item.book.titulo_libro}
                                             style={{ height: '300px', objectFit: 'cover' }} />
                                         <div className="card-body">
                                             <h6 className="card-title">{item.book.titulo}</h6>
                                             <p className="card-text text-muted small">{item.book.autor}</p>
                                         </div>
                                         <div className="card-footer">
-                                            <Link to={`/libros/${item.book.id_libro}`}
+                                            <Link to={`/detalle/${item.book.id_libros}`}
                                                 className="btn btn-sm btn-light w-100">
                                                 Ver Detalles
                                             </Link>
@@ -220,22 +270,45 @@ export default function BibliotecaUsuario() {
                 {/* Leídos */}
                 <div className="tab-pane fade" id="leido-pane" role="tabpanel"
                     aria-labelledby="leido-tab">
-                    {readBooks.length > 0 ? (
+                    {leidoBooks.length > 0 ? (
                         <div className="row">
-                            {readBooks.map(item => (
-                                <div key={item.library_id} className="col-md-3 mb-4">
+                            {leidoBooks.map(item => (
+                                <div key={item.rating_id} className="col-md-3 mb-4">
                                     <div className="card h-100">
-                                        <img src={item.book.cover_url || 'https://placehold.co/300x450'}
-                                            className="card-img-top" alt={item.book.titulo}
+                                        <img src={item.book.enlace_portada_libro || 'https://placehold.co/300x450'}
+                                            className="card-img-top" alt={item.book.titulo_libro}
                                             style={{ height: '300px', objectFit: 'cover' }} />
                                         <div className="card-body">
                                             <h6 className="card-title">{item.book.titulo}</h6>
                                             <p className="card-text text-muted small">{item.book.autor}</p>
+                                            {/* Show rating for read books */}
+                                            {item.calificacion && (
+                                                <div className="mt-2">
+                                                    <small className="text-warning">
+                                                        {'★'.repeat(item.calificacion)}
+                                                        {'☆'.repeat(5 - item.calificacion)}
+                                                        <span className="text-muted ms-1">({item.calificacion}/5)</span>
+                                                    </small>
+                                                </div>
+                                            )}
+                                            {item.resena && (
+                                                <div className="mt-2">
+                                                    <small className="text-muted">
+                                                        {item.resena.length > 100
+                                                            ? `${item.resena.substring(0, 100)}...`
+                                                            : item.resena}
+                                                    </small>
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="card-footer">
-                                            <Link to={`/libros/${item.book.id_libro}`}
-                                                className="btn btn-sm btn-light w-100">
+                                            <Link to={`/detalle/${item.book.id_libros}`}
+                                                className="btn btn-sm btn-light w-100 mb-2">
                                                 Ver Detalles
+                                            </Link>
+                                            <Link to={`/libros/${item.book.id_libros}/resena`}
+                                                className="btn btn-sm btn-outline-light w-100">
+                                                {item.calificacion || item.resena ? 'Editar Reseña' : 'Agregar Reseña'}
                                             </Link>
                                         </div>
                                     </div>
@@ -250,20 +323,20 @@ export default function BibliotecaUsuario() {
                 {/* Por Leer */}
                 <div className="tab-pane fade" id="porLeer-pane" role="tabpanel"
                     aria-labelledby="porLeer-tab">
-                    {toReadBooks.length > 0 ? (
+                    {quieroLeerBooks.length > 0 ? (
                         <div className="row">
-                            {toReadBooks.map(item => (
+                            {quieroLeerBooks.map(item => (
                                 <div key={item.library_id} className="col-md-3 mb-4">
                                     <div className="card h-100">
-                                        <img src={item.book.cover_url || 'https://placehold.co/300x450'}
-                                            className="card-img-top" alt={item.book.titulo}
+                                        <img src={item.book.enlace_portada_libro || 'https://placehold.co/300x450'}
+                                            className="card-img-top" alt={item.book.titulo_libro}
                                             style={{ height: '300px', objectFit: 'cover' }} />
                                         <div className="card-body">
                                             <h6 className="card-title">{item.book.titulo}</h6>
                                             <p className="card-text text-muted small">{item.book.autor}</p>
                                         </div>
                                         <div className="card-footer">
-                                            <Link to={`/libros/${item.book.id_libro}`}
+                                            <Link to={`/detalle/${item.book.id_libros}`}
                                                 className="btn btn-sm btn-light w-100">
                                                 Ver Detalles
                                             </Link>

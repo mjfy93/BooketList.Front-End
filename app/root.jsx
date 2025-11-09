@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import HtmlShell from './components/HtmlShell.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
-import { AdminProvider } from './context/AdminContext.jsx'
+
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -20,14 +20,12 @@ export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <AdminProvider>
           <HtmlShell>
             <main className='container mb-5'>
               <ScrollToTop />
               <Outlet />
             </main>
           </HtmlShell>
-        </AdminProvider>
       </AuthProvider>
     </ThemeProvider>
   )
@@ -38,7 +36,6 @@ export function ErrorBoundary({ error }) {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <AdminProvider>
           <HtmlShell>
             <main className='container mb-5'>
               <div className="alert alert-danger">
@@ -48,7 +45,6 @@ export function ErrorBoundary({ error }) {
               </div>
             </main>
           </HtmlShell>
-        </AdminProvider>
       </AuthProvider>
     </ThemeProvider>
   )

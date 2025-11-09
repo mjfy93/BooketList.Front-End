@@ -28,7 +28,7 @@ type Pages = {
   "/generosTodos": {
     params: {};
   };
-  "/generosTodos/:slug": {
+  "/genero/:slug": {
     params: {
       "slug": string;
     };
@@ -81,6 +81,11 @@ type Pages = {
       "id": string;
     };
   };
+  "/admin/authors/:id/edit": {
+    params: {
+      "id": string;
+    };
+  };
   "/admin/authors/:id": {
     params: {
       "id": string;
@@ -101,7 +106,7 @@ type Pages = {
 type RouteFiles = {
   "root.jsx": {
     id: "root";
-    page: "/" | "/libros" | "/autores" | "/autores/:authorId" | "/generosTodos" | "/generosTodos/:slug" | "/detalle/:bookId" | "/login" | "/register" | "/libros/:bookId/resena" | "/biblioteca" | "/profile" | "/admin/login" | "/admin" | "/admin/users" | "/admin/books" | "/admin/authors" | "/admin/books/new" | "/admin/authors/new" | "/admin/books/edit/:id" | "/admin/authors/:id" | "/admin/users/:id" | "/admin/authors/:id/books";
+    page: "/" | "/libros" | "/autores" | "/autores/:authorId" | "/generosTodos" | "/genero/:slug" | "/detalle/:bookId" | "/login" | "/register" | "/libros/:bookId/resena" | "/biblioteca" | "/profile" | "/admin/login" | "/admin" | "/admin/users" | "/admin/books" | "/admin/authors" | "/admin/books/new" | "/admin/authors/new" | "/admin/books/edit/:id" | "/admin/authors/:id/edit" | "/admin/authors/:id" | "/admin/users/:id" | "/admin/authors/:id/books";
   };
   "routes/_index.jsx": {
     id: "routes/_index";
@@ -125,7 +130,7 @@ type RouteFiles = {
   };
   "routes/genero.$slug.jsx": {
     id: "routes/genero.$slug";
-    page: "/generosTodos/:slug";
+    page: "/genero/:slug";
   };
   "routes/detalle.$bookId.jsx": {
     id: "routes/detalle.$bookId";
@@ -183,6 +188,10 @@ type RouteFiles = {
     id: "routes/admin-edit-book";
     page: "/admin/books/edit/:id";
   };
+  "routes/admin-edit-author.jsx": {
+    id: "routes/admin-edit-author";
+    page: "/admin/authors/:id/edit";
+  };
   "routes/admin-author-detail.jsx": {
     id: "routes/admin-author-detail";
     page: "/admin/authors/:id";
@@ -219,6 +228,7 @@ type RouteModules = {
   "routes/admin-new-book": typeof import("./app/routes/admin-new-book.jsx");
   "routes/admin-new-author": typeof import("./app/routes/admin-new-author.jsx");
   "routes/admin-edit-book": typeof import("./app/routes/admin-edit-book.jsx");
+  "routes/admin-edit-author": typeof import("./app/routes/admin-edit-author.jsx");
   "routes/admin-author-detail": typeof import("./app/routes/admin-author-detail.jsx");
   "routes/admin-user-detail": typeof import("./app/routes/admin-user-detail.jsx");
   "routes/admin-author-books": typeof import("./app/routes/admin-author-books.jsx");

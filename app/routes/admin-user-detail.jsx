@@ -1,13 +1,13 @@
-// routes/admin-user-detail.jsx
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate, Navigate } from 'react-router'
-import { useAdmin } from '../context/AdminContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 import LoadingSpinner from '../components/LoadingSpinner.jsx'
+import SessionBlocker from '../components/SessionBlocker'
 
 export default function AdminUserDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { adminFetch, isAdminLoggedIn, adminLogout, loading: authLoading, isInitialized } = useAdmin()
+  const { adminFetch, isAdminLoggedIn, adminLogout, loading: authLoading, isInitialized } = useAuth()
   const [user, setUser] = useState(null)
   const [reviews, setReviews] = useState([])
   const [library, setLibrary] = useState([])
@@ -24,7 +24,6 @@ export default function AdminUserDetail() {
     }
   }, [isAdminLoggedIn, id])
 
-  // Condicionales DESPUÉS de todos los hooks
   if (authLoading || !isInitialized) {
     return <LoadingSpinner />
   }
@@ -132,16 +131,18 @@ export default function AdminUserDetail() {
 
   if (!user) {
     return (
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-12 text-center py-5">
-            <h3>Usuario no encontrado</h3>
-            <Link to="/admin/users" className="btn btn-primary mt-3">
-              Volver a Usuarios
-            </Link>
+      <SessionBlocker requiredRole="admin">
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-12 text-center py-5">
+              <h3>Usuario no encontrado</h3>
+              <Link to="/admin/users" className="btn btn-primary mt-3">
+                Volver a Usuarios
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      </SessionBlocker>
     )
   }
 
@@ -385,120 +386,122 @@ export default function AdminUserDetail() {
   )
 
   return (
-    <div className="container-fluid">
-      <div className="row">
-        <div className="col-md-3 col-lg-2 vh-100 position-fixed">
-          <div className="p-3">
-            <h4 className="text-center mb-4">BooketList Admin</h4>
-            <nav className="nav flex-column">
-              <Link to="/admin" className="nav-link mb-2">
-                <i className="fas fa-tachometer-alt me-2"></i>Dashboard
-              </Link>
-              <Link to="/admin/users" className="nav-link mb-2">
-                <i className="fas fa-users me-2"></i>Gestión de Usuarios
-              </Link>
-              <Link to="/admin/books" className="nav-link mb-2">
-                <i className="fas fa-book me-2"></i>Gestión de Libros
-              </Link>
-              <Link to="/admin/authors" className="nav-link mb-2">
-                <i className="fas fa-pen-fancy me-2"></i>Gestión de Autores
-              </Link>
-              <button onClick={handleLogout} className="nav-link mt-4 text-start border-0 bg-transparent">
-                <i className="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
-              </button>
-            </nav>
-          </div>
-        </div>
-
-        <div className="col-md-9 col-lg-10 ms-auto">
-          <div className="p-4">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-              <h1>Perfil de Usuario</h1>
-              <Link to="/admin/users" className="btn btn-outline-secondary">
-                <i className="fas fa-arrow-left me-2"></i>Volver a Usuarios
-              </Link>
+    <SessionBlocker requiredRole="admin">
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-md-3 col-lg-2 vh-100 position-fixed">
+            <div className="p-3">
+              <h4 className="text-center mb-4">BooketList Admin</h4>
+              <nav className="nav flex-column">
+                <Link to="/admin" className="nav-link mb-2">
+                  <i className="fas fa-tachometer-alt me-2"></i>Dashboard
+                </Link>
+                <Link to="/admin/users" className="nav-link mb-2">
+                  <i className="fas fa-users me-2"></i>Gestión de Usuarios
+                </Link>
+                <Link to="/admin/books" className="nav-link mb-2">
+                  <i className="fas fa-book me-2"></i>Gestión de Libros
+                </Link>
+                <Link to="/admin/authors" className="nav-link mb-2">
+                  <i className="fas fa-pen-fancy me-2"></i>Gestión de Autores
+                </Link>
+                <button onClick={handleLogout} className="nav-link mt-4 text-start border-0 bg-transparent">
+                  <i className="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                </button>
+              </nav>
             </div>
+          </div>
 
-            {error && (
-              <div className="alert alert-danger" role="alert">
-                {error}
+          <div className="col-md-9 col-lg-10 ms-auto">
+            <div className="p-4">
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <h1>Perfil de Usuario</h1>
+                <Link to="/admin/users" className="btn btn-outline-secondary">
+                  <i className="fas fa-arrow-left me-2"></i>Volver a Usuarios
+                </Link>
               </div>
-            )}
 
-            {/* Header del Usuario */}
-            <div className="card mb-4">
-              <div className="card-body">
-                <div className="row align-items-center">
-                  <div className="col-md-8">
-                    <div className="d-flex align-items-center">
-                      <div className="avatar bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" 
-                           style={{width: '80px', height: '80px', fontSize: '2rem'}}>
-                        {user.nombre_usuario?.charAt(0) || 'U'}
-                      </div>
-                      <div>
-                        <h3 className="mb-1">{user.nombre_usuario} {user.apellido_usuario}</h3>
-                        <p className="text-muted mb-2">{user.email_usuario}</p>
-                        <div className="d-flex gap-2 mb-2">
-                          <span className={`badge ${user.is_active ? 'bg-success' : 'bg-danger'}`}>
-                            {user.is_active ? 'Activo' : 'Bloqueado'}
-                          </span>
+              {error && (
+                <div className="alert alert-danger" role="alert">
+                  {error}
+                </div>
+              )}
+
+              {/* Header del Usuario */}
+              <div className="card mb-4">
+                <div className="card-body">
+                  <div className="row align-items-center">
+                    <div className="col-md-8">
+                      <div className="d-flex align-items-center">
+                        <div className="avatar bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" 
+                             style={{width: '80px', height: '80px', fontSize: '2rem'}}>
+                          {user.nombre_usuario?.charAt(0) || 'U'}
                         </div>
-                        <div className="text-muted">
-                          <small>Miembro desde: {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}</small>
+                        <div>
+                          <h3 className="mb-1">{user.nombre_usuario} {user.apellido_usuario}</h3>
+                          <p className="text-muted mb-2">{user.email_usuario}</p>
+                          <div className="d-flex gap-2 mb-2">
+                            <span className={`badge ${user.is_active ? 'bg-success' : 'bg-danger'}`}>
+                              {user.is_active ? 'Activo' : 'Bloqueado'}
+                            </span>
+                          </div>
+                          <div className="text-muted">
+                            <small>Miembro desde: {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}</small>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="col-md-4 text-end">
-                    <div className="mb-3">
-                      <button 
-                        className={`btn ${user.is_active ? 'btn-warning' : 'btn-success'} btn-lg`}
-                        onClick={toggleUserStatus}
-                      >
-                        <i className={`fas ${user.is_active ? 'fa-lock' : 'fa-unlock'} me-2`}></i>
-                        {user.is_active ? 'Bloquear Usuario' : 'Desbloquear Usuario'}
-                      </button>
+                    <div className="col-md-4 text-end">
+                      <div className="mb-3">
+                        <button 
+                          className={`btn ${user.is_active ? 'btn-warning' : 'btn-success'} btn-lg`}
+                          onClick={toggleUserStatus}
+                        >
+                          <i className={`fas ${user.is_active ? 'fa-lock' : 'fa-unlock'} me-2`}></i>
+                          {user.is_active ? 'Bloquear Usuario' : 'Desbloquear Usuario'}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Navegación por Tabs */}
-            <nav>
-              <div className="nav nav-tabs" id="nav-tab" role="tablist">
-                <button
-                  className={`nav-link ${activeTab === 'overview' ? 'active' : ''}`}
-                  onClick={() => handleTabChange('overview')}
-                >
-                  <i className="fas fa-chart-bar me-2"></i>Resumen
-                </button>
-                <button
-                  className={`nav-link ${activeTab === 'reviews' ? 'active' : ''}`}
-                  onClick={() => handleTabChange('reviews')}
-                >
-                  <i className="fas fa-star me-2"></i>Reseñas
-                  {stats && <span className="badge bg-primary ms-2">{stats.total_reviews}</span>}
-                </button>
-                <button
-                  className={`nav-link ${activeTab === 'library' ? 'active' : ''}`}
-                  onClick={() => handleTabChange('library')}
-                >
-                  <i className="fas fa-book me-2"></i>Biblioteca
-                  {stats && <span className="badge bg-primary ms-2">{stats.total_books}</span>}
-                </button>
+              {/* Navegación por Tabs */}
+              <nav>
+                <div className="nav nav-tabs" id="nav-tab" role="tablist">
+                  <button
+                    className={`nav-link ${activeTab === 'overview' ? 'active' : ''}`}
+                    onClick={() => handleTabChange('overview')}
+                  >
+                    <i className="fas fa-chart-bar me-2"></i>Resumen
+                  </button>
+                  <button
+                    className={`nav-link ${activeTab === 'reviews' ? 'active' : ''}`}
+                    onClick={() => handleTabChange('reviews')}
+                  >
+                    <i className="fas fa-star me-2"></i>Reseñas
+                    {stats && <span className="badge bg-primary ms-2">{stats.total_reviews}</span>}
+                  </button>
+                  <button
+                    className={`nav-link ${activeTab === 'library' ? 'active' : ''}`}
+                    onClick={() => handleTabChange('library')}
+                  >
+                    <i className="fas fa-book me-2"></i>Biblioteca
+                    {stats && <span className="badge bg-primary ms-2">{stats.total_books}</span>}
+                  </button>
+                </div>
+              </nav>
+
+              {/* Contenido de los Tabs */}
+              <div className="tab-content mt-4">
+                {activeTab === 'overview' && renderOverview()}
+                {activeTab === 'reviews' && renderReviews()}
+                {activeTab === 'library' && renderLibrary()}
               </div>
-            </nav>
-
-            {/* Contenido de los Tabs */}
-            <div className="tab-content mt-4">
-              {activeTab === 'overview' && renderOverview()}
-              {activeTab === 'reviews' && renderReviews()}
-              {activeTab === 'library' && renderLibrary()}
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </SessionBlocker>
   )
 }

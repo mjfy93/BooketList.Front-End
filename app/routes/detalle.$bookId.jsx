@@ -105,6 +105,38 @@ export default function DetalleLibro() {
         fetchUserBookData();
     }, [auth?.isAuthenticated, auth?.user?.token, book.id]);
 
+    // ✅ FUNCIÓN PARA ELIMINAR LIBRO DESDE DETALLE
+    const handleRemoveBookFromDetail = async () => {
+        if (!window.confirm('¿Estás seguro de que quieres eliminar este libro de tu biblioteca? Esta acción también eliminará cualquier reseña asociada.')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `${API_BASE_URL}/api/my-library/books/${book.id}/complete-remove`,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${auth?.user?.token}`
+                    }
+                }
+            );
+
+            if (response.ok) {
+                setReadingState(null);
+                setRating(0);
+                alert('Libro eliminado de tu biblioteca exitosamente');
+                navigate('/biblioteca');
+            } else {
+                const errorData = await response.json();
+                alert(errorData.message || 'Error al eliminar el libro');
+            }
+        } catch (error) {
+            console.error("Error removing book:", error);
+            alert('Error al eliminar el libro');
+        }
+    };
+
     // Helper functions
     const isLoggedIn = () => {
         return auth?.isAuthenticated || false;
@@ -468,8 +500,8 @@ export default function DetalleLibro() {
                                 </div>
                             </div>
 
-                          
-                            <div className="dropdown mb-5">
+                            {/* Dropdown para estado de lectura */}
+                            <div className="dropdown mb-3">
                                 <button
                                     className="btn btn-success btn-lg dropdown-toggle w-100"
                                     type="button"
@@ -505,6 +537,18 @@ export default function DetalleLibro() {
                                     </ul>
                                 )}
                             </div>
+
+                            {/* ✅ BOTÓN PARA ELIMINAR LIBRO */}
+                            {readingState && (
+                                <button 
+                                    className="btn btn-outline-danger btn-lg"
+                                    onClick={handleRemoveBookFromDetail}
+                                    title="Eliminar libro y reseña de mi biblioteca"
+                                >
+                                    <i className="fas fa-trash me-2"></i>
+                                    Eliminar de mi biblioteca
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

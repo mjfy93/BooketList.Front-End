@@ -53,7 +53,7 @@ export default function Login() {
         <div className="card shadow border-0" style={{ width: '100%', maxWidth: '400px' }}>
           <div className="card-body p-4 p-md-5">
             <div className="text-center mb-4">
-              <h2 className="card-title fw-bold text-primary">Iniciar Sesión</h2>
+              <h2 className="card-title fw-bold text-warning">Iniciar Sesión</h2>
               <p className="text-muted mb-0">Accede a tu cuenta de BooketList</p>
             </div>
             
@@ -103,7 +103,7 @@ export default function Login() {
               
               <button 
                 type="submit" 
-                className="btn btn-primary btn-lg w-100 py-3 fw-semibold"
+                className="btn btn-warning btn-lg w-100 py-3 fw-semibold"
                 disabled={loading}
               >
                 {loading ? (
@@ -119,7 +119,7 @@ export default function Login() {
 
             <div className="text-center mt-4">
               <p className="text-muted">
-                ¿No tienes cuenta? <a href="/register" className="text-primary">Regístrate aquí</a>
+                ¿No tienes cuenta? <a href="/register" className="text-warning">Regístrate aquí</a>
               </p>
             </div>
           </div>

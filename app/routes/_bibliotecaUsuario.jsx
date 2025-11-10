@@ -118,16 +118,29 @@ export default function BibliotecaUsuario() {
       </SessionBlocker>
     )
   }
+  const tabStyles = `
+  .bibliotecaUsuarioContainer .nav-tabs .nav-link {
+    
+    color: #ffc107;
+    border: none;
+  }
+  .bibliotecaUsuarioContainer .nav-tabs .nav-link.active {
+   
+    color: #ffffff;
+  }
+`;
 
   return (
     <SessionBlocker requiredRole="user">
+      <style>{tabStyles}</style>
       <div className="bibliotecaUsuarioContainer">
         <ul className="nav nav-tabs" id="myTab" role="tablist">
           <li className="nav-item" role="presentation">
             <button className="nav-link active" id="librosTodos-tab" data-bs-toggle="tab"
               data-bs-target="#todosLibros-pane" type="button" role="tab"
-              aria-controls="todosLibros-pane" aria-selected="true">
+              aria-controls="todosLibros-pane" aria-selected="true" >
               Biblioteca ({allBooks.length})
+              
             </button>
           </li>
           <li className="nav-item" role="presentation">

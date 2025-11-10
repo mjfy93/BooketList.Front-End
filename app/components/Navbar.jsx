@@ -222,12 +222,12 @@ export default function Navbar() {
 
             <ul className='navbar-nav ms-auto align-items-center'>
               <li className='nav-item dropdown'>
-                <button className="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown"><i className="fas fa-user me-2"></i>Acceder a tu cuenta</button>
+                <button className="btn btn-outline dropdown-toggle" type="button" data-bs-toggle="dropdown"><i className="fas fa-user me-2"></i>Acceder a tu cuenta</button>
                 <ul className="dropdown-menu dropdown-menu-end">
                   <li><Link className="dropdown-item" to="/login"><i className="fas fa-sign-in-alt me-2"></i>Iniciar Sesión</Link></li>
                   <li><Link className="dropdown-item" to="/register"><i className="fas fa-user-plus me-2"></i>Crear Cuenta</Link></li>
                   <li><hr className="dropdown-divider" /></li>
-                  <li><Link className="dropdown-item text-info" to="/admin/login"><i className="fas fa-user-shield me-2"></i>Acceso Administradores</Link></li>
+                  <li><Link className="dropdown-item text-warning" to="/admin/login"><i className="fas fa-user-shield me-2"></i>Acceso Administradores</Link></li>
                 </ul>
               </li>
               <li className='nav-item ms-2'><SearchBar /></li>

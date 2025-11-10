@@ -97,7 +97,7 @@ export default function Home() {
 
   if (!isAuthenticated) {
     return (
-      <div className="row mt-5">
+      <div className="row mt-2">
         <div className="welcomeContainer col-8 text-center">
           <h1><FontAwesomeIcon icon={faBook} />BooketList </h1>
           <h2>Encuentra tu próximo libro favorito</h2>
@@ -108,7 +108,7 @@ export default function Home() {
           </div>
 
           <div className="mt-4">
-            <h5>Algunos de nuestros libros:</h5>
+            <h5>Algunos de nuestros títulos:</h5>
             <div className="row row-cols-5 g-3 justify-content-center">
               {booksToShow.map((book) => (
                 <div className="col" key={book.id_libros}>
@@ -123,6 +123,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
+            <h4 className="my-2">¡Crea tu usuario y comienza a explorar!</h4>
           </div>
         </div>
 
@@ -179,10 +180,10 @@ export default function Home() {
             </button>
 
             <p className="mt-2">
-              ¿No tienes una cuenta? <Link to="/register">Crea una cuenta.</Link>
+              ¿No tienes una cuenta? <Link to="/register" className="text-warning">Crea una cuenta.</Link>
             </p>
             <p className="mt-2">
-              <Link to="/admin">Ingresa como Administrador.</Link>
+              <Link to="/admin" className="text-warning">Ingresa como Administrador.</Link>
             </p>
           </form>
         </div>
@@ -237,7 +238,7 @@ export default function Home() {
                           )}
                         </div>
                         <div className="card-body align-items-center">
-                          
+
                           <Link
                             to={`/detalle/${item.book.id_libros}`}
                             className="btn btn-light btn-sm"

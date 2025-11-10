@@ -102,11 +102,11 @@ export default function Register() {
 
   return (
     <SessionBlocker requiredRole="user">
-      <div className="min-vh-100 d-flex align-items-center justify-content-center py-4 bg-dark">
+      <div className="min-vh-100 d-flex align-items-center justify-content-center py-4 ">
         <div className="card shadow border-0" style={{ width: '100%', maxWidth: '450px' }}>
           <div className="card-body p-4 p-md-5">
             <div className="text-center mb-4">
-              <h2 className="card-title fw-bold text-primary">Crear Cuenta</h2>
+              <h2 className="card-title fw-bold text-warning">Crear Cuenta</h2>
               <p className="text-muted mb-0">Únete a la comunidad de BooketList</p>
             </div>
             
@@ -190,7 +190,7 @@ export default function Register() {
               
               <button 
                 type="submit" 
-                className="btn btn-primary btn-lg w-100 py-3 fw-semibold"
+                className="btn btn-warning btn-lg w-100 py-3 fw-semibold"
                 disabled={loading}
               >
                 {loading ? (
@@ -206,7 +206,7 @@ export default function Register() {
 
             <div className="text-center mt-4">
               <p className="text-muted">
-                ¿Ya tienes cuenta? <Link to="/login" className="text-primary">Inicia sesión aquí</Link>
+                ¿Ya tienes cuenta? <Link to="/login" className="text-warning">Inicia sesión aquí</Link>
               </p>
             </div>
           </div>

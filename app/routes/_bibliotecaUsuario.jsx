@@ -44,6 +44,61 @@ export default function BibliotecaUsuario() {
     fetchLibrary()
   }, [isAuthenticated, user?.token, navigate])
 
+  // ✅ FUNCIÓN PARA ELIMINAR LIBRO COMPLETAMENTE
+  const handleRemoveBook = async (bookId, readingState, libraryId, ratingId) => {
+    if (!window.confirm('¿Estás seguro de que quieres eliminar este libro de tu biblioteca? Esta acción también eliminará cualquier reseña asociada.')) {
+      return
+    }
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/my-library/books/${bookId}/complete-remove`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${user.token}`
+          }
+        }
+      )
+
+      if (response.ok) {
+        // Actualizar el estado local eliminando el libro
+        setLibraryData(prevData => {
+          const newData = { ...prevData }
+          
+          // Eliminar de la sección correspondiente
+          if (readingState === 'quiero_leer') {
+            newData.quiero_leer = newData.quiero_leer.filter(
+              item => item.library_id !== libraryId
+            )
+            newData.counts.quiero_leer -= 1
+          } else if (readingState === 'leyendo') {
+            newData.leyendo = newData.leyendo.filter(
+              item => item.library_id !== libraryId
+            )
+            newData.counts.leyendo -= 1
+          } else if (readingState === 'leido') {
+            newData.leido = newData.leido.filter(
+              item => item.rating_id !== ratingId
+            )
+            newData.counts.leido -= 1
+          }
+          
+          newData.total_books -= 1
+          return newData
+        })
+        
+        alert('Libro eliminado de tu biblioteca exitosamente')
+      } else {
+        const errorData = await response.json()
+        alert(errorData.message || 'Error al eliminar el libro')
+      }
+    } catch (err) {
+      console.error('Error removing book:', err)
+      alert('Error al eliminar el libro')
+    }
+  }
+
   // Helper function to combine books with consistent structure
   const combineBooksWithState = (booksArray, state) => {
     return booksArray.map(item => ({
@@ -130,7 +185,7 @@ export default function BibliotecaUsuario() {
     border-top:  #495057 solid 1px;
     border-left:  #495057 solid 1px;
   }
-`;
+`
 
   return (
     <SessionBlocker requiredRole="user">
@@ -208,9 +263,22 @@ export default function BibliotecaUsuario() {
                       </div>
                       <div className="card-footer">
                         <Link to={`/detalle/${item.book.id_libros}`}
-                          className="btn btn-sm btn-light w-100">
+                          className="btn btn-sm btn-light w-100 mb-2">
                           Ver Detalles
                         </Link>
+                        <button 
+                          className="btn btn-sm btn-outline-danger w-100"
+                          onClick={() => handleRemoveBook(
+                            item.book.id_libros, 
+                            item.reading_state, 
+                            item.library_id, 
+                            item.rating_id
+                          )}
+                          title="Eliminar de mi biblioteca"
+                        >
+                          <i className="fas fa-trash me-1"></i>
+                          Eliminar
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -277,9 +345,22 @@ export default function BibliotecaUsuario() {
                       </div>
                       <div className="card-footer">
                         <Link to={`/detalle/${item.book.id_libros}`}
-                          className="btn btn-sm btn-light w-100">
+                          className="btn btn-sm btn-light w-100 mb-2">
                           Ver Detalles
                         </Link>
+                        <button 
+                          className="btn btn-sm btn-outline-danger w-100"
+                          onClick={() => handleRemoveBook(
+                            item.book.id_libros, 
+                            item.reading_state, 
+                            item.library_id, 
+                            item.rating_id
+                          )}
+                          title="Eliminar de mi biblioteca"
+                        >
+                          <i className="fas fa-trash me-1"></i>
+                          Eliminar
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -332,9 +413,22 @@ export default function BibliotecaUsuario() {
                           Ver Detalles
                         </Link>
                         <Link to={`/libros/${item.book.id_libros}/resena`}
-                          className="btn btn-sm btn-outline-light w-100">
+                          className="btn btn-sm btn-outline-light w-100 mb-2">
                           {item.calificacion || item.resena ? 'Editar Reseña' : 'Agregar Reseña'}
                         </Link>
+                        <button 
+                          className="btn btn-sm btn-outline-danger w-100"
+                          onClick={() => handleRemoveBook(
+                            item.book.id_libros, 
+                            item.reading_state, 
+                            item.library_id, 
+                            item.rating_id
+                          )}
+                          title="Eliminar libro y reseña"
+                        >
+                          <i className="fas fa-trash me-1"></i>
+                          Eliminar
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -364,9 +458,22 @@ export default function BibliotecaUsuario() {
                       </div>
                       <div className="card-footer">
                         <Link to={`/detalle/${item.book.id_libros}`}
-                          className="btn btn-sm btn-light w-100">
+                          className="btn btn-sm btn-light w-100 mb-2">
                           Ver Detalles
                         </Link>
+                        <button 
+                          className="btn btn-sm btn-outline-danger w-100"
+                          onClick={() => handleRemoveBook(
+                            item.book.id_libros, 
+                            item.reading_state, 
+                            item.library_id, 
+                            item.rating_id
+                          )}
+                          title="Eliminar de mi biblioteca"
+                        >
+                          <i className="fas fa-trash me-1"></i>
+                          Eliminar
+                        </button>
                       </div>
                     </div>
                   </div>
